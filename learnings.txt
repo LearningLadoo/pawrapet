@@ -1,0 +1,31 @@
+1)
+
+To make the SVG code compatible for rendering in Flutter using the flutter_svg package, we need to remove the transform attribute, which is causing the "Bad state: illegal or unsupported transform: none" error. Additionally, we need to modify the viewBox and class attributes. Here's a step-by-step guide:
+
+Remove the transform Attribute: Remove the transform attribute from the <svg> element. It's causing the error and is not necessary for rendering the SVG in Flutter.
+
+Modify the viewBox Attribute: The viewBox attribute should be adjusted to match the dimensions of the SVG content. In this case, it's "0 0 15900 13580". Make sure it reflects the correct dimensions of your SVG content.
+
+Remove the class Attribute: Remove the class attribute, as it's not directly supported in Flutter's rendering of SVG.
+
+2)
+
+To create documentation, use /// above your code.
+you can use the following prompt to auto generate documentation
+generate documentation for flutter in following format
+/// description
+///
+/// parameters
+///
+/// example usage
+///
+/// default values
+ for
+ then in terminal write
+ dart pub global activate dartdoc
+ dartdoc
+
+ 3) https://data.gov.in/
+ it has soo many apis and more for pincode and location use this
+
+ 4) when you use Image and add an image provider then the image cache is not updated, so using image.memory works pretty well or in other words reading bytes is what that makes the difference
