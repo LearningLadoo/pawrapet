@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawrapet/utils/constants.dart';
-import 'package:pawrapet/utils/extensions/dateTime.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/functions/common.dart';
 import 'package:pawrapet/utils/functions/paths.dart';
@@ -13,6 +10,28 @@ import 'package:pawrapet/utils/functions/uploadFiles.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
+
+///
+/// Profile structure {
+///   username: <String>,
+///   name: <String>,
+///   type: <String>,
+///   colour: <String>,
+///   breed: <String>,
+///   birthDate: <String>, // in dd/mm/yyyy format
+///   gender: <String>,
+///   personality: <String>, // separated with commas
+///   description: <String?>,
+///   height: <double>, // in cm
+///   weight: <double>, // in kgs
+///   amount: <double>, // in Rs
+///   assetUrls: {  // will be stored as string in isar,
+///       icon_0: {
+///          ext: "jpg",
+///          url: "http://"
+///       }
+///   }
+/// }
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -29,7 +48,7 @@ class _ProfileState extends State<Profile> {
   bool _chargeAmount = false;
   ImageProvider? _iconImage, _mainImage;
   String? _error;
-
+  Map<String,dynamic> _profileMap = {};
 
   @override
   void initState() {
@@ -412,7 +431,10 @@ class _ProfileState extends State<Profile> {
                               hintText: "Amount (₹)",
                               textInputAction: TextInputAction.next,
                               initialValue: _amount == null ? null : _amount.toString(),
-                              keyboardType: TextInputType.text,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               onChangedFn: (String? value) {
                                 setState(() {
                                   _amount = (value != null) ? double.parse(value) : null;

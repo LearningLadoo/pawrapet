@@ -1,11 +1,80 @@
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pawrapet/utils/constants.dart';
+
+class XHeartWithImageButton extends StatefulWidget {
+  ImageProvider? iconL, iconR;
+  double height;
+  double? gap;
+  VoidCallback onTap;
+  XHeartWithImageButton({Key? key, this.iconL, this.iconR, required this.height, this.gap , required this.onTap}) : super(key: key);
+  @override
+  State<XHeartWithImageButton> createState() => _XHeartWithImageButtonState();
+}
+
+class _XHeartWithImageButtonState extends State<XHeartWithImageButton> with TickerProviderStateMixin{
+  late AnimationController _pulseAnimationController, _lottieAnimationController;
+  @override
+  void initState() {
+    // lottie animation in bg
+    _lottieAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+    // setting up animation controller to create a pulse effect
+    _pulseAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    // Reverse the animation when it's completed
+    _pulseAnimationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _pulseAnimationController.animateBack(0, duration: Duration(milliseconds: 100));
+      }
+    });
+    super.initState();
+  }
+  @override
+  void dispose() {
+    _pulseAnimationController.dispose();
+    _lottieAnimationController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: widget.height,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: -widget.height,
+            left: -widget.height,
+            child: SizedBox(
+                height: widget.height*3,
+                child: Lottie.asset("assets/lotties/love_success.json", controller: _lottieAnimationController, repeat: false)),
+          ),
+          SizedBox(
+            height: widget.height,
+            child: GestureDetector(
+              onTap: (){
+                _pulseAnimationController.forward();
+                if(widget.iconL==null&&widget.iconR!=null)_lottieAnimationController.forward();
+                widget.onTap();
+              },
+              child: AnimatedBuilder(
+                animation: _pulseAnimationController,
+                  builder: (context,child){
+                  return XHeartWithImage(height: widget.height+widget.height/4*(_pulseAnimationController.value), gap: widget.gap, iconL: widget.iconL, iconR: widget.iconR,);
+                  }),
+            )
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class XHeartWithImage extends StatefulWidget {
   ImageProvider? iconL, iconR;
-  double? height, gap;
-  XHeartWithImage({Key? key, this.iconL, this.iconR, this.height, this.gap }) : super(key: key);
+  double height;
+  double? gap;
+  XHeartWithImage({Key? key, this.iconL, this.iconR, required this.height, this.gap }) : super(key: key);
 
   @override
   State<XHeartWithImage> createState() => _XHeartWithImageState();
@@ -13,29 +82,25 @@ class XHeartWithImage extends StatefulWidget {
 
 class _XHeartWithImageState extends State<XHeartWithImage> {
   double ratioWh = 34.61/60;
-  late double height;
-  late double width;
   late double gap;
   @override
   void initState() {
-    height = widget.height??80;
-    width = ratioWh*height;
     gap = widget.gap??xSize1;
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
-      width: width*0.9*2,
+      height: widget.height,
+      width: ratioWh*widget.height*1.77,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Positioned(
             right: 0,
             child: SizedBox(
-              height: height,
-              width: width,
+              height: widget.height,
+              width: ratioWh*widget.height,
               child: CustomPaint(
                 painter: _RightClipperPainter(),
               ),
@@ -44,8 +109,8 @@ class _XHeartWithImageState extends State<XHeartWithImage> {
           Positioned(
             right: 0,
             child: Container(
-              height: height-gap,
-              width: ratioWh*(height-gap),
+              height: widget.height-gap,
+              width: ratioWh*(widget.height-gap),
               margin: EdgeInsets.symmetric(vertical: gap*0.4, horizontal: gap*0.3),
               child: ClipPath(
                 clipper: _RightCustomClipper(),
@@ -54,20 +119,26 @@ class _XHeartWithImageState extends State<XHeartWithImage> {
             ),
           ),
 
-          SizedBox(
-            height: height,
-            width: width,
-            child: CustomPaint(
-              painter: _LeftClipperPainter(),
+          Positioned(
+            left: 0,
+            child: SizedBox(
+              height: widget.height,
+              width: ratioWh*widget.height,
+              child: CustomPaint(
+                painter: _LeftClipperPainter(),
+              ),
             ),
           ),
-          Container(
-            height: height-gap,
-            width: ratioWh*(height-gap),
-            margin: EdgeInsets.symmetric(vertical: gap*0.4, horizontal: gap*0.3),
-            child: ClipPath(
-              clipper: _LeftCustomClipper(),
-              child: (widget.iconL==null)?null:Image(image: widget.iconL!, fit: BoxFit.cover,),
+          Positioned(
+            left: 0,
+            child: Container(
+              height: widget.height-gap,
+              width: ratioWh*(widget.height-gap),
+              margin: EdgeInsets.symmetric(vertical: gap*0.4, horizontal: gap*0.3),
+              child: ClipPath(
+                clipper: _LeftCustomClipper(),
+                child: (widget.iconL==null)?null:Image(image: widget.iconL!, fit: BoxFit.cover,),
+              ),
             ),
           ),
         ],

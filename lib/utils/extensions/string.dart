@@ -19,4 +19,12 @@ extension HandleValues on String? {
     }
     return int.parse(temp);
   }
+  String removeTrailingZeros() {
+    String valueString = this!;
+    if (valueString.contains('.')) {
+      valueString = valueString.replaceAll(RegExp(r'0*$'), '');
+      valueString = valueString.replaceAll(RegExp(r'\.$'), '');
+    }
+    return valueString;
+  }
 }

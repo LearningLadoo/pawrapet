@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pawrapet/screens/profile/profile.dart';
 import 'package:pawrapet/screens/profile/profileDisplay.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/extensions/buildContext.dart';

@@ -6,7 +6,7 @@ import 'package:pawrapet/utils/extensions/buildContext.dart';
 
 enum AppBarType { backWithHeading, heading, home, search, profile, account }
 
-Widget xAppBar(AppBarType type, BuildContext context, {String? text}) {
+Widget xAppBar(AppBarType type, BuildContext context, {String? text, String? username}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: xSize / 4),
     color: xSurface,
@@ -45,6 +45,42 @@ Widget xAppBar(AppBarType type, BuildContext context, {String? text}) {
               ),
             ),
           ),
+        // profile
+        if (type == AppBarType.profile) ...[
+          InkWell(
+            onTap: () {
+              context.pop();
+            },
+            child: const Icon(
+              CupertinoIcons.back,
+              size: xSize,
+            ),
+          ),
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.only(right: xSize / 4),
+              child: Text(
+                text??"",
+                style: xTheme.textTheme.titleLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(right: xSize / 4),
+              child: Text(
+                "@$username",
+                style: xTheme.textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
+            ),
+          )
+        ],
+        // home
         if (type == AppBarType.home) ...[
           Expanded(
             child: Padding(
