@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pawrapet/screens/login/login.dart';
-import 'package:pawrapet/screens/login/loginVerify.dart';
-import 'package:pawrapet/screens/profile/profileQuick.dart';
+import 'package:pawrapet/screens/profile/profileDisplay.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/extensions/buildContext.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
-
-import '../profile/profile.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -49,7 +45,7 @@ class Welcome extends StatelessWidget {
                         child: XRoundedButton(
                           text: "Let's Get Started!",
                           onPressed: () {
-                            context.push(const Profile());
+                            context.push(const ProfileDisplay());
                           },
                           expand: true,
                         ),

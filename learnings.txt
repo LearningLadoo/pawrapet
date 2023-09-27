@@ -29,3 +29,6 @@ generate documentation for flutter in following format
  it has soo many apis and more for pincode and location use this
 
  4) when you use Image and add an image provider then the image cache is not updated, so using image.memory works pretty well or in other words reading bytes is what that makes the difference
+ but this will keep on updating, for every setstate, its better to build another widget from the null statement.
+ nope It was because of FlutterImageCompress.compressAndGetFile, as it returns a file which somehow couldn't be use for image, its mentioned in their documentation as well
+ doing compression in on step and returning Unit8List and saving file in next step, and returning that unit8List solved the problem.

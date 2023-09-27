@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/extensions/dateTime.dart';
@@ -26,8 +27,14 @@ class _ProfileState extends State<Profile> {
   double? _height, _weight;
   double? _amount;
   bool _chargeAmount = false;
-  File? _iconImageFile, _mainImageFile;
+  ImageProvider? _iconImage, _mainImage;
   String? _error;
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +52,18 @@ class _ProfileState extends State<Profile> {
                     // icon image
                     GestureDetector(
                       onTap: () async {
-                        xPrint("ami tap asti ");
                         try {
-                          File? imageFile = await xPickCropCompressSaveImage(
+                          final image = await xPickCropCompressSaveImage(
                             source: ImageSource.gallery,
+                            cropAspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
                             path: getProfileImagesPath(
                               username: "userTemp",
                               type: ProfileImageType.icon,
                             ),
                           );
-                          if (imageFile != null) {
+                          if (image != null) {
                             setState(() {
-                              _iconImageFile = imageFile;
+                              _iconImage = image;
                             });
                           }
                         } catch (e) {
@@ -68,8 +75,8 @@ class _ProfileState extends State<Profile> {
                           CircleAvatar(
                             radius: xSize5 * 3, // thrice of the font size
                             backgroundColor: xSecondary.withOpacity(0.9),
-                            backgroundImage: _iconImageFile != null ? Image.memory(_iconImageFile!.readAsBytesSync()).image : null,
-                            child: (_iconImageFile == null)
+                            backgroundImage: _iconImage,
+                            child: (_iconImage == null)
                                 ? Icon(
                                     Icons.add,
                                     color: xOnSecondary.withOpacity(0.5),
@@ -77,7 +84,7 @@ class _ProfileState extends State<Profile> {
                                   )
                                 : Center(),
                           ),
-                          if (_iconImageFile != null)
+                          if (_iconImage != null)
                             Positioned(
                               bottom: 0,
                               right: 0,
@@ -309,16 +316,17 @@ class _ProfileState extends State<Profile> {
                     GestureDetector(
                       onTap: () async {
                         try {
-                          File? imageFile = await xPickCropCompressSaveImage(
+                          final image = await xPickCropCompressSaveImage(
                             source: ImageSource.gallery,
+                            cropAspectRatio: const CropAspectRatio(ratioX: 2, ratioY: 3),
                             path: getProfileImagesPath(
                               username: "userTemp",
                               type: ProfileImageType.main,
                             ),
                           );
-                          if (imageFile != null) {
+                          if (image != null) {
                             setState(() {
-                              _mainImageFile = imageFile;
+                              _mainImage = image;
                             });
                           }
                         } catch (e) {
@@ -334,9 +342,9 @@ class _ProfileState extends State<Profile> {
                               decoration: BoxDecoration(
                                 color: xSecondary.withOpacity(0.9),
                                 borderRadius: BorderRadius.circular(xSize2),
-                                image: (_mainImageFile != null) ? DecorationImage(image: Image.memory(_mainImageFile!.readAsBytesSync()).image, fit: BoxFit.cover) : null,
+                                image: (_mainImage != null) ? DecorationImage(image:_mainImage!, fit: BoxFit.cover) : null,
                               ),
-                              child: (_mainImageFile == null)
+                              child: (_mainImage == null)
                                   ? Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
@@ -357,7 +365,7 @@ class _ProfileState extends State<Profile> {
                                   : const Center(),
                             ),
                           ),
-                          if (_mainImageFile != null)
+                          if (_mainImage != null)
                             Positioned(
                               bottom: xSize / 2,
                               right: xSize / 2,
@@ -462,8 +470,8 @@ class _ProfileState extends State<Profile> {
                             _height == null ||
                             _weight == null ||
                             _personality == null ||
-                            _iconImageFile == null ||
-                            _mainImageFile == null) {
+                            _iconImage == null ||
+                            _mainImage == null) {
                           _error = "Please fill all the details";
                           setState(() {});
                           return;
@@ -481,8 +489,8 @@ class _ProfileState extends State<Profile> {
                           _height == null ||
                           _weight == null ||
                           _personality == null ||
-                          _iconImageFile == null ||
-                          _mainImageFile == null),
+                          _iconImage == null ||
+                          _mainImage == null),
                     ),
                     const SizedBox().vertical(),
                     XRoundedButton(
@@ -496,8 +504,8 @@ class _ProfileState extends State<Profile> {
                             _height == null ||
                             _weight == null ||
                             _personality == null ||
-                            _iconImageFile == null ||
-                            _mainImageFile == null) {
+                            _iconImage == null ||
+                            _mainImage == null) {
                           _error = "Please fill all the details";
                           setState(() {});
                           return;
@@ -515,8 +523,8 @@ class _ProfileState extends State<Profile> {
                           _height == null ||
                           _weight == null ||
                           _personality == null ||
-                          _iconImageFile == null ||
-                          _mainImageFile == null),
+                          _iconImage == null ||
+                          _mainImage == null),
                     ),
                   ],
                 ),
