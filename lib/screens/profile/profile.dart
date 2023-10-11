@@ -10,6 +10,8 @@ import 'package:pawrapet/utils/functions/uploadFiles.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
+import '../../utils/widgets/displayText.dart';
+import '../../utils/widgets/datePicker.dart';
 
 ///
 /// Profile structure {
@@ -61,7 +63,7 @@ class _ProfileState extends State<Profile> {
       body: SafeArea(
         child: Column(
           children: [
-            xAppBar(AppBarType.backWithHeading, context, text: "Edit Profile"),
+            XAppBar(AppBarType.backWithHeading,title:"Edit Profile"),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -391,7 +393,7 @@ class _ProfileState extends State<Profile> {
                               child: Container(
                                   padding: const EdgeInsets.all(xSize / 4),
                                   decoration: BoxDecoration(
-                                    color: xSurface,
+                                    color: xOnPrimary,
                                     borderRadius: BorderRadius.circular(xSize),
                                     boxShadow: [
                                       BoxShadow(

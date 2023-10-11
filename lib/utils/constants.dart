@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pawrapet/utils/extensions/colors.dart';
 
 late Map<String, dynamic> petsData;
 // to generate sizes
@@ -16,12 +18,13 @@ late double xHeight, xWidth;
 // strings
 late String xLocalPath;
 // colors
-const Color xPrimary = Color(0xFF2c4251);
+// const Color xPrimary = Color(0xFF2c4251);
+const Color xPrimary = Color(0xFF152F41);
 const Color xOnPrimary = Color(0xFFf8f0e5);
 const Color xSecondary = Color(0xFFd7dfd0);
 const Color xOnSecondary = Color(0xFF425d4b);
 const Color xSurface = Color(0xFFf8f0e5);
-const Color xOnSurface = Color(0xFFf3ead9);
+const Color xOnSurface = Color(0xfff8e7c5);
 const Color xError = Color(0xFFf8ccc3);
 const Color xOnError = Color(0xFFd7585b);
 const Color xInfoColor = Color(0xFFf2dfbd);
@@ -31,7 +34,7 @@ const Color xOnInfoColor = Color(0xFF8f9087);
 late ThemeData xTheme;
 ThemeData lightTheme = ThemeData.light(useMaterial3: true).copyWith(
   scaffoldBackgroundColor: xSurface,
-  colorScheme: const ColorScheme(
+  colorScheme: ColorScheme(
     brightness: Brightness.light,
     primary: xPrimary,
     onPrimary: xOnPrimary,
@@ -42,7 +45,7 @@ ThemeData lightTheme = ThemeData.light(useMaterial3: true).copyWith(
     background: xSurface,
     onBackground: xOnSurface,
     surface: xSurface,
-    onSurface: xOnSurface,
+    onSurface: xPrimary!.withOpacity(0.6),
   ),
   textTheme: const TextTheme(
     // logo
@@ -78,7 +81,7 @@ ThemeData lightTheme = ThemeData.light(useMaterial3: true).copyWith(
     // paragraph
     bodyMedium: TextStyle(
       fontSize: xSize4,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
     ),
     // extra info
     bodySmall: TextStyle(
@@ -119,7 +122,8 @@ ColorScheme xDatePickerColorScheme = ColorScheme(
   secondary: xOnSecondary.withOpacity(0.8),
   onSecondary: xSecondary,
   secondaryContainer: xOnSecondary.withOpacity(0.5),
-
   error: xError,
   onError: xOnError,
 );
+// system theme
+SystemUiOverlayStyle xMySystemTheme = SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: xOnPrimary, statusBarColor: xOnPrimary, systemNavigationBarIconBrightness: Brightness.dark);

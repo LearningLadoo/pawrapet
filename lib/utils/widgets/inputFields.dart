@@ -1,7 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:pawrapet/utils/extensions/dateTime.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/extensions/string.dart';
 import 'package:pawrapet/utils/functions/common.dart';
@@ -14,6 +13,7 @@ class XTextField extends StatefulWidget {
   final String? hintText;
   final String? initialValue;
   final int? lines;
+  final Color? backgroundColor;
   final Function onChangedFn;
   final VoidCallback? onEditingComplete;
   final FocusNode? focusNode;
@@ -32,6 +32,7 @@ class XTextField extends StatefulWidget {
     this.initialValue,
     this.lines,
     required this.onChangedFn,
+    this.backgroundColor,
     this.onEditingComplete,
     this.focusNode,
     this.autofillHints,
@@ -71,21 +72,21 @@ class _XTextFieldState extends State<XTextField> {
           decoration: InputDecoration(
             filled: true,
             isDense: true,
-            fillColor: xSecondary.withOpacity(0.8),
+            fillColor: widget.backgroundColor??xSecondary.withOpacity(0.8),
             hintText: widget.hintText,
             hintMaxLines: widget.lines ?? 1,
             hintStyle: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(color: xOnSecondary.withOpacity(0.5)),
             contentPadding: const EdgeInsets.symmetric(horizontal: xSize / 3, vertical: xSize / 3),
             border: OutlineInputBorder(
-              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
           ),
@@ -149,6 +150,7 @@ class _XTextFieldState extends State<XTextField> {
 
 class XDropDownField extends StatefulWidget {
   final TextStyle? textStyle;
+  final Color? fillColor;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? hintText;
@@ -175,6 +177,7 @@ class XDropDownField extends StatefulWidget {
     required this.onTap,
     this.focusNode,
     this.autofillHints,
+    this.fillColor,
   }) : super(key: key);
 
   @override
@@ -356,37 +359,222 @@ class _XDropDownFieldState extends State<XDropDownField> {
   }
 }
 
-Widget xErrorText(BuildContext context, String message) {
-  return Container(
-    padding: const EdgeInsets.all(xSize / 8),
-    width: xWidth,
-    decoration: const BoxDecoration(
-      color: xError,
-      borderRadius: BorderRadius.all(Radius.circular(xSize2)),
-    ),
-    child: Center(
-      child: Text(
-        message,
-        style: xTheme.textTheme.labelLarge!.apply(color: xOnError, fontSizeDelta: -1),
-      ),
-    ),
-  );
+class XDropDownChip extends StatefulWidget {
+  final TextStyle? textStyle;
+  final Color? fillColor;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final String? hintText;
+  final String? initialValue;
+  final Function? onSelected;
+  final Function? onTap;
+  final FocusNode? focusNode;
+  final List<String>? autofillHints;
+  List<String> list;
+  final bool? enabled;
+  final List<TextInputFormatter>? inputFormatters;
+
+  XDropDownChip({
+    Key? key,
+    required this.list,
+    this.enabled,
+    this.textStyle,
+    this.inputFormatters,
+    this.keyboardType,
+    this.textInputAction,
+    this.hintText,
+    this.initialValue,
+    this.onSelected,
+    this.onTap,
+    this.focusNode,
+    this.autofillHints,
+    this.fillColor,
+  }) : super(key: key);
+
+  @override
+  State<XDropDownChip> createState() => _XDropDownChipState();
 }
-Widget xInfoText(BuildContext context, String message) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: xSize / 4, vertical: xSize / 8),
-    width: xWidth,
-    decoration: BoxDecoration(
-      color: xInfoColor,
-      borderRadius: BorderRadius.all(Radius.circular(xSize2)),
-    ),
-    child: Center(
-      child: Text(
-        message,
-        style: xTheme.textTheme.labelLarge!.apply(color: xOnInfoColor, fontSizeDelta: -1),
-      ),
-    ),
-  );
+
+class _XDropDownChipState extends State<XDropDownChip> {
+  FocusNode focusNode = FocusNode();
+  bool expanded = false;
+  List<String> displayList = [];
+  String? selectedText;
+  late double expandedHeight;
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    focusNode = widget.focusNode ?? focusNode;
+    focusNode.addListener(_handleFocus);
+    displayList = widget.list;
+    if (displayList.length < 3) {
+      expandedHeight = xSize * 2;
+    } else {
+      expandedHeight = xSize * 3;
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    focusNode.removeListener(_handleFocus);
+    focusNode.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _handleFocus() {
+    expanded = focusNode.hasFocus;
+    // to refresh the list and properties
+    displayList = widget.list;
+    if (displayList.length < 3) {
+      expandedHeight = xSize * 2;
+    } else {
+      expandedHeight = xSize * 3;
+    }
+    // avoid wrong selected Text because of on changed or change in the list
+    selectedText = displayList.contains(selectedText.toString()) ? selectedText : null;
+    controller.text = "";
+    setState(() {});
+    xPrint("I ran");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    try {
+      return Column(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+            width: expanded ? xWidth : xSize * 2.5,
+            height: xSize * 0.9,
+            child: TextField(
+              controller: controller,
+              enabled: widget.enabled ?? true,
+              style: widget.textStyle ?? xTheme.textTheme.labelLarge!.copyWith(color: xPrimary.withOpacity(0.9)),
+              focusNode: focusNode,
+              decoration: InputDecoration(
+                filled: true,
+                isDense: true,
+                fillColor: xPrimary.withOpacity(0.2),
+                hintText: widget.hintText,
+                hintStyle: (widget.textStyle ?? xTheme.textTheme.labelLarge)!.copyWith(color: xPrimary.withOpacity(0.8)),
+                contentPadding: EdgeInsets.symmetric(horizontal: xSize1, vertical: xSize1 / 3).copyWith(right: xSize1 / 4),
+                constraints: BoxConstraints(minHeight: xSize, maxHeight: xSize),
+                suffixIconConstraints: BoxConstraints(minWidth: xSize, minHeight: xSize),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 0, color: xPrimary.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(xSize2),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 0, color: xPrimary.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(xSize2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 0, color: xPrimary.withOpacity(0.2)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(xSize2)),
+                ),
+                suffixIcon: InkWell(
+                  onTap: () {
+                    (focusNode.hasFocus) ? focusNode.unfocus() : focusNode.requestFocus();
+                  },
+                  child: Icon(
+                    expanded ? Icons.keyboard_arrow_up_rounded : Icons.add_rounded,
+                    size: xSize * 0.8,
+                    color: xPrimary.withOpacity(1),
+                  ),
+                ),
+              ),
+              keyboardType: widget.keyboardType ?? TextInputType.text,
+              textInputAction: widget.textInputAction ?? TextInputAction.next,
+              autofillHints: widget.autofillHints,
+              inputFormatters: widget.inputFormatters,
+              onTapOutside: (event) {
+                // setState(() {
+                //   focusNode.unfocus();
+                // });
+              },
+              onChanged: (value) {
+                String? temp = value.handleEmpty;
+                if (temp == null) {
+                  displayList = widget.list;
+                } else {
+                  List<String> startList = [], containList = [];
+                  for (String i in widget.list) {
+                    if (i.toLowerCase().startsWith(temp.toLowerCase())) {
+                      startList.add(i);
+                    } else if (i.toLowerCase().contains(temp.toLowerCase())) {
+                      containList.add(i);
+                    }
+                  }
+                  displayList = [...startList, ...containList];
+                }
+                setState(() {});
+              },
+            ),
+          ),
+          // the list
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+            height: expanded ? expandedHeight : 0,
+            width: expanded ? xWidth : xSize * 2.5,
+            decoration: BoxDecoration(
+              color: xPrimary.withOpacity(0.2),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(xSize2)),
+            ),
+            child: (displayList.isEmpty)
+                ? Container(
+                    alignment: Alignment.bottomCenter,
+                    width: xWidth,
+                    padding: const EdgeInsets.symmetric(horizontal: xSize / 3, vertical: xSize / 3),
+                    child: Text(
+                      "No result found. Try changing your search.",
+                      style: xTheme.textTheme.labelLarge!.copyWith(color: xPrimary.withOpacity(0.7)),
+                    ))
+                : ListView(
+                    physics: const BouncingScrollPhysics(),
+                    children: displayList.map((field) {
+                      return Column(
+                        children: [
+                          Divider(
+                            height: 0,
+                            color: xPrimary.withOpacity(0.1),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              widget.onSelected!(field);
+                              selectedText = field;
+                              focusNode.nextFocus();
+                            },
+                            splashColor: xOnSecondary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(xSize2),
+                            child: Container(
+                                alignment: Alignment.centerLeft,
+                                width: xWidth,
+                                padding: const EdgeInsets.symmetric(horizontal: xSize / 3, vertical: xSize / 6),
+                                child: Text(
+                                  field,
+                                  style: xTheme.textTheme.labelLarge!.copyWith(
+                                    color: xPrimary.withOpacity(0.9),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                    // itemExtent: small,
+                  ),
+          ),
+        ],
+      );
+    } catch (e) {
+      return Text("$e");
+    }
+  }
 }
 
 class XOtpTextField extends StatefulWidget {
@@ -452,144 +640,248 @@ class _XOtpTextFieldState extends State<XOtpTextField> {
   }
 }
 
-class XDatePickerField extends StatefulWidget {
-  final TextStyle? textStyle;
-  final String? hintText;
-  final String? initialValue; // storing the string as dd/MM/yyyy
-  final Function onSelected;
-  final Function onTap;
-  final bool enabled;
+class XWrapChipsWithHeadingAndAddFromList extends StatefulWidget {
+  String heading;
+  List<String> list;
+  List<String> initialList;
+  Function(List<String>) onChanged;
 
-  const XDatePickerField({
+  XWrapChipsWithHeadingAndAddFromList({Key? key, required this.heading, required this.list, required this.initialList, required this.onChanged}) : super(key: key);
+
+  @override
+  State<XWrapChipsWithHeadingAndAddFromList> createState() => _XWrapChipsWithHeadingAndAddFromListState();
+}
+
+class _XWrapChipsWithHeadingAndAddFromListState extends State<XWrapChipsWithHeadingAndAddFromList> {
+  List<String> selectedList = [];
+
+  @override
+  void initState() {
+    selectedList = [...widget.initialList];
+    for (String i in selectedList) {
+      widget.list.remove(i);
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      runSpacing: xSize / 4,
+      spacing: xSize / 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        ...[widget.heading],
+        ...selectedList,
+        ...["add"]
+      ].map((value) {
+        if (value == widget.heading) {
+          return Text(
+            value,
+            style: xTheme.textTheme.labelLarge!.apply(color: xPrimary.withOpacity(0.9), fontWeightDelta: 1),
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+        if (value == "add") {
+          if (widget.list.isEmpty) return Center();
+          return XDropDownChip(
+            list: widget.list,
+            onSelected: (v) {
+              selectedList.add(v);
+              widget.list.remove(v);
+              widget.onChanged(selectedList);
+              setState(() {});
+            },
+            hintText: "Add",
+          );
+        }
+        return Container(
+          decoration: BoxDecoration(
+            color: xPrimary.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(xSize2),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: xSize1, vertical: xSize1 / 3).copyWith(right: xSize1 / 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: xWidth * 0.35),
+                child: Text(
+                  value.trim(),
+                  style: xTheme.textTheme.labelLarge!.apply(color: xOnPrimary.withOpacity(0.9)),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  selectedList.remove(value);
+                  widget.list.add(value);
+                  widget.onChanged(selectedList);
+                  setState(() {});
+                },
+                child: Icon(
+                  Icons.close_rounded,
+                  color: xOnPrimary.withOpacity(0.7),
+                ),
+              )
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class XSearchFieldWithFilter extends StatefulWidget {
+  final TextStyle? textStyle;
+  final Color? fillColor;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final String? hintText;
+  final String? initialValue;
+  final Function onChanged;
+  final Function? onTap;
+  final FocusNode? focusNode;
+  final bool? enabled;
+  final List<TextInputFormatter>? inputFormatters;
+
+  XSearchFieldWithFilter({
     Key? key,
-    this.enabled = true,
+    this.enabled,
     this.textStyle,
+    this.inputFormatters,
+    this.keyboardType,
+    this.textInputAction,
     this.hintText,
     this.initialValue,
-    required this.onSelected,
-    required this.onTap,
+    required this.onChanged,
+    this.onTap,
+    this.focusNode,
+    this.fillColor,
   }) : super(key: key);
 
   @override
-  State<XDatePickerField> createState() => _XDatePickerFieldState();
+  State<XSearchFieldWithFilter> createState() => _XSearchFieldWithFilterState();
 }
 
-class _XDatePickerFieldState extends State<XDatePickerField> {
-  DateTime? selectedDate;
+class _XSearchFieldWithFilterState extends State<XSearchFieldWithFilter> {
+  FocusNode focusNode = FocusNode();
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
-    if (widget.initialValue != null) {
-      selectedDate = DateTime(0).fromddMMyyyy(widget.initialValue!);
-    }
+    focusNode = widget.focusNode ?? focusNode;
+    focusNode.addListener(_handleFocus);
     super.initState();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate ?? DateTime.now(),
-        firstDate: DateTime(1950),
-        lastDate: DateTime.now(),
-        builder: (BuildContext context, Widget? child) => Theme(
-            data: xTheme.copyWith(
-              textTheme: xTheme.textTheme.apply(
-                displayColor: xOnSecondary.withOpacity(0.8),
-                bodyColor: xOnSecondary.withOpacity(0.8),
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    focusNode.removeListener(_handleFocus);
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  void _handleFocus() {
+    // this set state is only changing the values
+    setState(() {});
+    xPrint("I ran");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          enabled: widget.enabled ?? true,
+          style: widget.textStyle ?? xTheme.textTheme.bodyLarge!.copyWith(color: xOnSecondary.withOpacity(1)),
+          focusNode: focusNode,
+          controller: textEditingController,
+          decoration: InputDecoration(
+            filled: true,
+            isDense: true,
+            fillColor: xPrimary.withOpacity(0.1),
+            hintText: widget.hintText ?? "Search",
+            hintStyle: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(color: xOnSecondary.withOpacity(0.5)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: xSize/4, vertical: 0), // padding in the left or right is already 0,
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderRadius: BorderRadius.circular(xSize2),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderRadius: BorderRadius.circular(xSize2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0, color: xSecondary),
+              borderRadius: BorderRadius.circular(xSize2),
+            ),
+            prefixIcon: (!focusNode.hasFocus) ?  SizedBox(
+              child: InkWell(
+                onTap: () {
+                },
+                child: Icon(
+                  // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
+                  Icons.search_rounded,
+                  size: xSize,
+                  color: xPrimary.withOpacity(0.3),
+                ),
               ),
-              colorScheme: xDatePickerColorScheme,
+            ):null,
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if(focusNode.hasFocus) SizedBox().horizontal(size: xSize / 6),
+                if(focusNode.hasFocus) InkWell(
+                  onTap: () {
+                    textEditingController.text = "";
+                    // todo call the onChanged here
+                    setState(() {
+
+                    });
+                  },
+                  child: Icon(
+                    // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
+                     Icons.close,
+                    size: xSize,
+                    color: xPrimary.withOpacity(0.7),
+                  ),
+                ),
+                SizedBox().horizontal(size: xSize / 6),
+                InkWell(
+                  onTap: () {
+                    // todo
+                  },
+                  child: Icon(
+                    // CupertinoIcons.slider_horizontal_3,
+                   Icons.filter_alt_rounded,
+                    size: xSize,
+                    color: xPrimary.withOpacity(0.7),
+                  ),
+                ),
+                // SizedBox().horizontal(size: xSize / 6),
+              ],
             ),
-            child: child!));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-      widget.onSelected(selectedDate == null ? null : selectedDate!.toddMMyyyy());
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          if (!widget.enabled) return;
-          widget.onTap();
-          _selectDate(context);
-          xPrint("Wow Sexyyy");
-        },
-        child: Container(
-          width: xWidth,
-          padding: const EdgeInsets.symmetric(horizontal: xSize / 3, vertical: xSize / 3),
-          decoration: BoxDecoration(
-            color: xSecondary.withOpacity(0.8),
-            borderRadius: BorderRadius.circular(xSize2),
           ),
-          child: Text(
-            "${selectedDate != null ? selectedDate!.fullWithOrdinal() : widget.hintText}",
-            style: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(
-              color: xOnSecondary.withOpacity(selectedDate == null ? 0.5 : 1),
-            ),
-          ),
-        ));
-  }
-}
-
-class MultipleDayPickerScreen extends StatefulWidget {
-
-  List<DateTime> selectedDates;
-  Color? color, onColor;
-  ValueChanged<List<DateTime>> onChanged;
-  TextStyle? style;
-
-  MultipleDayPickerScreen({super.key, required this.selectedDates, required this.onChanged, this.color, this.onColor, this.style});
-
-  @override
-  _MultipleDayPickerScreenState createState() => _MultipleDayPickerScreenState();
-}
-
-class _MultipleDayPickerScreenState extends State<MultipleDayPickerScreen> {
-  late List<DateTime> _selectedDates;
-  DateTime firstDate = DateTime.now();
-  late Color color, onColor;
-  late TextStyle style;
-  @override
-  void initState() {
-    color = widget.color??xOnSecondary;
-    onColor = widget.onColor??xSecondary;
-    style = widget.style??xTheme.textTheme.bodySmall!;
-    _selectedDates = widget.selectedDates;
-    super.initState();
-  }
-
-  void _handleDateChanged(List<DateTime> selectedDates) {
-    setState(() {
-      _selectedDates = selectedDates;
-    });
-    widget.onChanged(selectedDates);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DayPicker.multi(
-      selectedDates: _selectedDates,
-      onChanged: _handleDateChanged,
-      firstDate: firstDate,
-      lastDate: DateTime(firstDate.year, firstDate.month + 3, firstDate.day),
-      datePickerLayoutSettings: const DatePickerLayoutSettings(
-        contentPadding: EdgeInsets.all(0),
-        cellContentMargin: EdgeInsets.all(2),
-      ),
-      datePickerStyles: DatePickerRangeStyles(
-        defaultDateTextStyle: style.copyWith(color: color.withOpacity(0.9)),
-        selectedDateStyle: style.copyWith(color: onColor),
-        disabledDateStyle: style.copyWith(color: color.withOpacity(0.3)),
-        currentDateStyle: style.copyWith(color: color.withOpacity(0.9)),
-        displayedPeriodTitle: style.apply(color: color.withOpacity(1), fontSizeDelta: 4),
-        dayHeaderStyle: DayHeaderStyle(textStyle: style.copyWith(color: color.withOpacity(1))),
-        selectedSingleDateDecoration: BoxDecoration(color: color.withOpacity(0.9), shape: BoxShape.circle),
-        nextIcon: Icon(Icons.chevron_right_rounded, color: color),
-        prevIcon: Icon(Icons.chevron_left_rounded, color: color),
-      ),
+          keyboardType: widget.keyboardType ?? TextInputType.text,
+          textInputAction: widget.textInputAction ?? TextInputAction.search,
+          inputFormatters: widget.inputFormatters,
+          onTap: () {
+            if (widget.onTap != null) widget.onTap!();
+          },
+          onTapOutside: (event) {
+            setState(() {
+              focusNode.unfocus();
+            });
+          },
+          onChanged: (value) {
+            String? temp = value.handleEmpty;
+            widget.onChanged(temp);
+            setState(() {});
+          },
+        ),
+      ],
     );
   }
 }

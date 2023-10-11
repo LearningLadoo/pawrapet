@@ -1,35 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pawrapet/utils/extensions/buildContext.dart';
 import '../constants.dart';
 
-/// Creates a rounded button with customizable text, appearance, and behavior.
-///
-/// Parameters:
-///   - [text]: The text to display on the button. Defaults to "Text" if not provided.
-///   - [onPressed]: The callback function to be invoked when the button is pressed. Required.
-///   - [expand]: Whether the button should expand to fill available horizontal space. Defaults to false.
-///   - [padding]: The padding for the button. Defaults to half of `xSize`.
-///   - [backgroundColor]: The background color of the button. Defaults to `xPrimary`.
-///   - [textStyle]: The text style of the button text. Defaults to a modified version of `xTheme.textTheme.headlineMedium`.
-///
-/// Example Usage:
-/// ```dart
-/// xRoundedButton(
-///   text: "Click Me",
-///   onPressed: () {
-///     // Handle button press
-///   },
-///   expand: true,
-///   padding: EdgeInsets.all(16.0),
-///   backgroundColor: Colors.blue,
-///   textStyle: TextStyle(color: Colors.white),
-/// )
-/// ```
-///
-/// Default Values:
-///   - [expand]: false
-///   - [padding]: Half of `xSize`
-///   - [backgroundColor]: `xPrimary`
-///   - [textStyle]: Modified `xTheme.textTheme.headlineMedium` with color `xOnPrimary`
 
 class XRoundedButton extends StatefulWidget {
   final String? text;
@@ -59,14 +31,13 @@ class _XRoundedButtonState extends State<XRoundedButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (widget.textStyle ?? xTheme.textTheme.headlineMedium)!.fontSize!*2.5,
+      height: (widget.textStyle ?? xTheme.textTheme.headlineMedium)!.fontSize! * 2.5,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          minimumSize: Size(0,0),
-          backgroundColor: widget.enabled?(widget.backgroundColor ?? xPrimary):Colors.grey.withOpacity(0.7),
-          padding: widget.padding ??  const EdgeInsets.symmetric(horizontal: xSize / 2),
-          shadowColor: Colors.transparent
-        ),
+            minimumSize: const Size(0, 0),
+            backgroundColor: widget.enabled ? (widget.backgroundColor ?? xPrimary.withOpacity(0.9)) : Colors.grey.withOpacity(0.7),
+            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: xSize / 2),
+            shadowColor: Colors.transparent),
         onPressed: widget.onPressed,
         child: SizedBox(
           width: widget.expand ? xWidth : null,
@@ -74,6 +45,124 @@ class _XRoundedButtonState extends State<XRoundedButton> {
             widget.text ?? "Text",
             textAlign: TextAlign.center,
             style: widget.textStyle ?? xTheme.textTheme.headlineMedium!.copyWith(color: xOnPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class XRoundedButtonOutlined extends StatefulWidget {
+  final String? text;
+  final VoidCallback onPressed;
+  final bool expand;
+  final EdgeInsetsGeometry? padding;
+  final Color? color;
+  final TextStyle? textStyle;
+  bool enabled;
+
+  XRoundedButtonOutlined({
+    Key? key,
+    this.text,
+    this.enabled = true,
+    required this.onPressed,
+    this.expand = false,
+    this.padding,
+    this.color,
+    this.textStyle,
+  }) : super(key: key);
+
+  @override
+  _XRoundedButtonOutlinedState createState() => _XRoundedButtonOutlinedState();
+}
+
+class _XRoundedButtonOutlinedState extends State<XRoundedButtonOutlined> {
+  late Color color;
+  @override
+  void initState() {
+    color = widget.enabled ? (widget.color ?? xPrimary.withOpacity(0.9)) : Colors.grey.withOpacity(0.7);
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: (widget.textStyle ?? xTheme.textTheme.headlineMedium)!.fontSize! * 2.5,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+            minimumSize: const Size(0, 0),
+            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: xSize / 2),
+            side: BorderSide(width: xSize1/3, color: color),
+            shadowColor: Colors.transparent),
+        onPressed: widget.onPressed,
+        child: SizedBox(
+          width: widget.expand ? xWidth : null,
+          child: Text(
+            widget.text ?? "Text",
+            textAlign: TextAlign.center,
+            style: (widget.textStyle ?? xTheme.textTheme.headlineMedium)!.apply(color: color, fontWeightDelta: 1),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class XColoredButton extends StatefulWidget {
+  Color backgroundColor;
+  String text;
+  VoidCallback onTap;
+  TextStyle? textStyle;
+  EdgeInsets? padding;
+  double? textOpacity;
+  bool invert;
+  Color? invertedTextColor;
+  XColoredButton({Key? key, required this.backgroundColor, required this.text, required this.onTap, this.textStyle, this.padding, this.textOpacity, this.invert = false, this.invertedTextColor}) : super(key: key);
+
+  @override
+  State<XColoredButton> createState() => _XColoredButtonState();
+}
+
+class _XColoredButtonState extends State<XColoredButton> {
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(xSize1),
+      child: InkWell(
+        onTap: widget.onTap,
+        child: Container(
+          color: widget.backgroundColor,
+          child: Container(
+            padding: widget.padding ?? const EdgeInsets.symmetric(vertical: xSize / 4, horizontal: xSize / 2),
+            color: (!widget.invert)?widget.backgroundColor:xPrimary.withOpacity(widget.textOpacity ?? 0.7),
+            child: Text(
+              widget.text,
+              textAlign: TextAlign.center,
+              style: (widget.textStyle??xTheme.textTheme.bodyMedium)!.apply(color: (widget.invert)?(widget.invertedTextColor??widget.backgroundColor):(xPrimary.withOpacity(widget.textOpacity ?? 0.7)), fontWeightDelta: 1),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class XBackButton extends StatelessWidget {
+  double size;
+  XBackButton({Key? key, this.size = xSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.pop();
+      },
+      child: SizedBox(
+        height: size,
+        child: Transform.translate(
+          offset: Offset(-size*0.8/4, 0),
+          child: Icon(
+            Icons.arrow_back_ios_rounded,
+            size: size*0.8,
           ),
         ),
       ),

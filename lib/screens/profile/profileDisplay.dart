@@ -26,6 +26,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
   late ImageProvider _iconImage, _mainImage;
   ImageProvider? _iconI, _iconThey;
   late bool _iLiked, _theyLiked;
+
   @override
   void initState() {
     _username = "userTemp";
@@ -42,7 +43,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
     _amount = 150;
     _iconImage = Image.asset("assets/images/pet1.jpeg").image;
     _mainImage = Image.asset("assets/images/pet1_image.jpeg").image;
-    _iLiked  = false;
+    _iLiked = false;
     _theyLiked = false;
     _iconThey = _iconImage;
     super.initState();
@@ -54,20 +55,11 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
       body: SafeArea(
         child: Stack(
           children: [
-            Container(
+            SizedBox(
               height: xHeight,
               child: Column(
                 children: [
-                  xAppBar(AppBarType.profile, context, text: _name, username: _username),
-                  XHeartWithImageButton(height: 80,iconL: _iconI,iconR: _iconThey, onTap: (){
-                    setState(() {
-                      if(_iconI==null){
-                        _iconI = _iconImage;
-                      } else {
-                        _iconI = null;
-                      }
-                    });
-                  },),
+                  XAppBar(AppBarType.profile, title: _name, username: _username),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -97,7 +89,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                     Opacity(
                                       opacity: 0.8,
                                       child: Text(
-                                        "${_gender.capitalizeFirstOfEach}, ${calculateAge(DateTime(0).fromddMMyyyy(_birthDate))} years${(_amount != null || _amount! != 0) ? "\n₹${_amount.toString().removeTrailingZeros()} per mating" : ""}",
+                                        "${_gender.capitalizeFirstOfEach}, ${DateTime(0).fromddMMyyyy(_birthDate).calculateYears()} years${(_amount != null || _amount! != 0) ? "\n₹${_amount.toString().removeTrailingZeros()} per mating" : ""}",
                                         style: xTheme.textTheme.bodyMedium!.apply(fontSizeDelta: -4, fontWeightDelta: 1),
                                       ),
                                     ),
@@ -127,46 +119,50 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                             "I’m looking for a partner, are you interested ?",
                             style: xTheme.textTheme.bodySmall!.apply(fontWeightDelta: 1),
                           ),
-                          const SizedBox().vertical(size: xSize*0.9),
+                          const SizedBox().vertical(size: xSize * 0.9),
                           SizedBox(
-                            height: xSize*3.5,
+                            height: xSize * 3.5,
                             width: xWidth,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
                                 Positioned(
-                                    bottom:0,
-                                    left: -xSize/2,
-                                    child: Image.asset("assets/images/element2.png", alignment: Alignment.bottomLeft,height: xSize*2,)),
+                                    bottom: 0,
+                                    left: -xSize / 2,
+                                    child: Image.asset(
+                                      "assets/images/element2.png",
+                                      alignment: Alignment.bottomLeft,
+                                      height: xSize * 2,
+                                    )),
                                 Positioned(
                                   bottom: 0,
-                                  right: -xSize/2,
+                                  right: -xSize / 2,
                                   child: Transform.flip(
                                     flipX: true,
-                                    child: Image.asset("assets/images/element2.png", alignment: Alignment.bottomLeft, height: xSize*2,))),
-                                // animation
-                                Positioned(
-                                  top: -xSize*2,
-                                  child: Container(
-                                      alignment: Alignment.center,
-                                      width: xWidth-xSize,
-                                      height: xSize*6,
-                                      child: Lottie.asset("assets/lotties/love_success.json", )),
+                                    child: Image.asset(
+                                      "assets/images/element2.png",
+                                      alignment: Alignment.bottomLeft,
+                                      height: xSize * 2,
+                                    ),
+                                  ),
                                 ),
                                 Align(
                                   alignment: Alignment.topCenter,
-                                    child: GestureDetector(
-                                      onTap: (){
-                                        setState(() {
-                                          _iLiked = !_iLiked;
-                                        });
-                                      },
-                                      child: XHeartWithImage(
-                                        height: xSize*2,
-                                        iconL: (_iLiked)?_iconImage:null,
-                                        iconR: (_theyLiked)?_iconImage:null,
-                                      ),
-                                    )),
+                                  child: XHeartWithImageButton(
+                                    height: 80,
+                                    iconL: _iconI,
+                                    iconR: _iconThey,
+                                    onTap: () {
+                                      setState(() {
+                                        if (_iconI == null) {
+                                          _iconI = _iconImage;
+                                        } else {
+                                          _iconI = null;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
                           ),

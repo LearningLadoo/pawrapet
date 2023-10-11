@@ -32,3 +32,5 @@ generate documentation for flutter in following format
  but this will keep on updating, for every setstate, its better to build another widget from the null statement.
  nope It was because of FlutterImageCompress.compressAndGetFile, as it returns a file which somehow couldn't be use for image, its mentioned in their documentation as well
  doing compression in on step and returning Unit8List and saving file in next step, and returning that unit8List solved the problem.
+
+ 5) Unique Key creates multiple copies on setState

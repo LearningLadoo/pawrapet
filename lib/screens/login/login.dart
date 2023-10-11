@@ -4,11 +4,13 @@ import 'package:pawrapet/screens/login/utils/functions.dart';
 import 'package:pawrapet/screens/login/utils/widgets.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
-import 'package:pawrapet/utils/extensions/string.dart';
+import '../../utils/widgets/displayText.dart';
 import 'package:pawrapet/utils/functions/common.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
+
+import '../../utils/widgets/common.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -33,7 +35,7 @@ class _LoginState extends State<Login> {
               children: [
                 const SizedBox().vertical(),
                 const SizedBox().vertical(),
-                headerBanner("Enter Phone Number"),
+                xHeaderBanner("Enter Phone Number"),
                 // enter number
                 Row(
                   children: [
@@ -43,7 +45,7 @@ class _LoginState extends State<Login> {
                         hintText: "Code",
                         initialValue: "+91",
                         enabled: false,
-                        onChangedFn: (){},
+                        onChangedFn: (v){},
                       ),
                     ),
                     const SizedBox().horizontal(),
@@ -91,7 +93,7 @@ class _LoginState extends State<Login> {
             left: 0,
             child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
           ),
-          xAppBar(AppBarType.backWithHeading, context, text: "Login"),
+          XAppBar(AppBarType.backWithHeading, title: "Login"),
         ],
       )),
     );

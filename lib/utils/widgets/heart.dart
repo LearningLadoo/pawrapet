@@ -18,7 +18,7 @@ class _XHeartWithImageButtonState extends State<XHeartWithImageButton> with Tick
   @override
   void initState() {
     // lottie animation in bg
-    _lottieAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+    _lottieAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 2000), lowerBound: 0.5, upperBound: 1);
     // setting up animation controller to create a pulse effect
     _pulseAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     // Reverse the animation when it's completed
@@ -47,7 +47,7 @@ class _XHeartWithImageButtonState extends State<XHeartWithImageButton> with Tick
             left: -widget.height,
             child: SizedBox(
                 height: widget.height*3,
-                child: Lottie.asset("assets/lotties/love_success.json", controller: _lottieAnimationController, repeat: false)),
+                child: Lottie.asset("assets/lotties/exploding_heart.json", controller: _lottieAnimationController, repeat: false)),
           ),
           SizedBox(
             height: widget.height,
@@ -60,7 +60,7 @@ class _XHeartWithImageButtonState extends State<XHeartWithImageButton> with Tick
               child: AnimatedBuilder(
                 animation: _pulseAnimationController,
                   builder: (context,child){
-                  return XHeartWithImage(height: widget.height+widget.height/4*(_pulseAnimationController.value), gap: widget.gap, iconL: widget.iconL, iconR: widget.iconR,);
+                  return XHeartWithImage(height: widget.height+widget.height/7*(_pulseAnimationController.value), gap: widget.gap, iconL: widget.iconL, iconR: widget.iconR,);
                   }),
             )
           ),

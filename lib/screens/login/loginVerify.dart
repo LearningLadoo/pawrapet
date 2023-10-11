@@ -9,6 +9,9 @@ import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
 
+import '../../utils/widgets/common.dart';
+import '../../utils/widgets/displayText.dart';
+
 class LoginVerify extends StatefulWidget {
   const LoginVerify({Key? key}) : super(key: key);
 
@@ -37,7 +40,7 @@ class _LoginVerifyState extends State<LoginVerify> {
               children: [
                 const SizedBox().vertical(),
                 const SizedBox().vertical(),
-                headerBanner("Enter OTP to Verify"),
+                xHeaderBanner("Enter OTP to Verify"),
                 // enter number
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +159,7 @@ class _LoginVerifyState extends State<LoginVerify> {
             left: 0,
             child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
           ),
-          xAppBar(AppBarType.backWithHeading, context, text: "Verification"),
+          XAppBar(AppBarType.backWithHeading,title: "Verification"),
         ],
       )),
     );

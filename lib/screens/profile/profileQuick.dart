@@ -6,6 +6,8 @@ import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
 
+import '../../utils/widgets/displayText.dart';
+
 class ProfileQuick extends StatefulWidget {
   const ProfileQuick({Key? key}) : super(key: key);
 
@@ -173,7 +175,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                   ),
                 ),
               ),
-              xAppBar(AppBarType.backWithHeading, context, text: "Quick Info"),
+              XAppBar(AppBarType.backWithHeading, title: "Quick Info"),
             ],
           ),
         ),

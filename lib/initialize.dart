@@ -42,6 +42,8 @@ class _InitializeState extends State<Initialize> {
 }
 
 Future<void> initializeVariables(BuildContext context) async {
+  // changing the bottom nav bar
+  SystemChrome.setSystemUIOverlayStyle(xMySystemTheme);
   // create variables
   xTheme = Theme.of(context);
   xHeight = MediaQuery.of(context).size.height;
