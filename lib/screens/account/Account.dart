@@ -40,9 +40,10 @@ class _AccountState extends State<Account> {
                     child: govtId(),
                   )
                 ],
+
               ),
               const SizedBox().vertical(),
-              askAnything(),
+              AskAnything(),
               const SizedBox().vertical(),
               const ScheduleWidget(),
               const SizedBox().vertical(),
