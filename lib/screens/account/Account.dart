@@ -47,9 +47,9 @@ class _AccountState extends State<Account> {
               const SizedBox().vertical(),
               const ScheduleWidget(),
               const SizedBox().vertical(),
-              manageRecords(),
+              ManageRecords(),
               const SizedBox().vertical(),
-              history(),
+              History(),
               const SizedBox().vertical(),
               deleteAccount()
             ],

@@ -174,15 +174,16 @@ class NotificationTile extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       details["text"],
                       style: xTheme.textTheme.bodySmall!.apply(fontSizeDelta: -1),
                     ),
                     Text(
-                      "${dt.ordinalSuffix()} ${DateFormat('MMM').format(dt)} ${DateFormat('hh:mm a').format(dt)}",
+                      "${dt.ordinalSuffix()} ${DateFormat('MMM').format(dt)}, ${DateFormat('hh:mm a').format(dt)}",
                       textAlign: TextAlign.right,
-                      style: xTheme.textTheme.labelSmall,
+                      style: xTheme.textTheme.labelSmall!.apply(color: xPrimary.withOpacity(0.5)),
                     )
                   ],
                 ),

@@ -137,6 +137,7 @@ class _XColoredButtonState extends State<XColoredButton> {
             child: Text(
               widget.text,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
               style: (widget.textStyle??xTheme.textTheme.bodyMedium)!.apply(color: (widget.invert)?(widget.invertedTextColor??widget.backgroundColor):(xPrimary.withOpacity(widget.textOpacity ?? 0.7)), fontWeightDelta: 1),
             ),
           ),
