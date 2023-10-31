@@ -51,7 +51,7 @@ class _AccountState extends State<Account> {
               const SizedBox().vertical(),
               History(),
               const SizedBox().vertical(),
-              deleteAccount()
+              DeleteAccount()
             ],
           ),
         )

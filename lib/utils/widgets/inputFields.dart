@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -879,6 +880,178 @@ class _XSearchFieldWithFilterState extends State<XSearchFieldWithFilter> {
             String? temp = value.handleEmpty;
             widget.onChanged(temp);
             setState(() {});
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class XTextFieldWithPicker extends StatefulWidget {
+  final TextStyle? textStyle;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final String? hintText;
+  final Color? backgroundColor;
+  final Function onTextChangedFn;
+  final Function onFilePathsChangedFn;
+
+  /// list of paths as input
+  List<String>? autofillHints;
+  final bool? enabled;
+  final List<TextInputFormatter>? inputFormatters;
+
+  XTextFieldWithPicker({
+    Key? key,
+    this.enabled,
+    this.textStyle,
+    this.inputFormatters,
+    this.keyboardType,
+    this.textInputAction,
+    this.hintText,
+    required this.onTextChangedFn,
+    this.backgroundColor,
+    required this.onFilePathsChangedFn,
+    this.autofillHints,
+  }) : super(key: key);
+
+  @override
+  State<XTextFieldWithPicker> createState() => _XTextFieldWithPickerState();
+}
+
+class _XTextFieldWithPickerState extends State<XTextFieldWithPicker> {
+  late TextEditingController controller;
+  FocusNode focusNode = FocusNode();
+  List<String?> paths = [];
+
+  @override
+  void initState() {
+    controller = TextEditingController(text: "");
+    focusNode = focusNode;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (paths.isNotEmpty)
+          Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: xSize1 / 2,
+            spacing: xSize1 / 2,
+            children: paths.map((path) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: xSize / 4, vertical: xSize / 6),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(xSize), color: const Color(0xFFcec3c6).withOpacity(0.5)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: xSize * 5.5),
+                      child: Text(
+                        path.extractFileName()!,
+                        style: xTheme.textTheme.labelMedium!.apply(
+                          fontSizeDelta: -2,
+                          color: xOnSecondary.withOpacity(0.9),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox().horizontal(size: xSize / 6),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          paths.remove(path);
+                        });
+                      },
+                      child: const Icon(
+                        Icons.close_rounded,
+                        size: xSize / 2,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        if (paths.isNotEmpty) const SizedBox().vertical(size: xSize1 / 2),
+        TextField(
+          enabled: widget.enabled ?? true,
+          controller: controller,
+          style: widget.textStyle ?? xTheme.textTheme.bodyLarge!.copyWith(color: xOnSecondary.withOpacity(1)),
+          focusNode: focusNode,
+          decoration: InputDecoration(
+              filled: true,
+              isDense: true,
+              fillColor: widget.backgroundColor ?? xSecondary.withOpacity(0.8),
+              hintText: widget.hintText,
+              hintMaxLines: 1,
+              hintStyle: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(color: xOnSecondary.withOpacity(0.5)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: xSize / 4, vertical: xSize / 4).copyWith(left: 0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
+                borderRadius: BorderRadius.circular(xSize2),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
+                borderRadius: BorderRadius.circular(xSize2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
+                borderRadius: BorderRadius.circular(xSize2),
+              ),
+              prefixIconConstraints: const BoxConstraints(
+                maxWidth: xSize1 * 2 + xSize * 0.6,
+                minWidth: xSize1 * 2 + xSize * 0.6,
+                minHeight: xSize * 1.3,
+              ),
+              prefixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox().horizontal(size: xSize1),
+                  InkWell(
+                    onTap: () async {
+                      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+                      if (result != null) {
+                        paths.addAll(result.paths);
+                      } else {
+                        // User canceled the picker
+                      }
+                      setState(() {});
+                    },
+                    child: SizedBox(
+                      width: xSize * 0.7,
+                      child: FittedBox(
+                        child: Icon(
+                          CupertinoIcons.paperclip,
+                          color: xOnSecondary.withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )),
+          keyboardType: widget.keyboardType ?? TextInputType.multiline,
+          textInputAction: widget.textInputAction ?? TextInputAction.newline,
+          minLines: 1,
+          maxLines: 3,
+          onChanged: widget.onTextChangedFn as String? Function(String?)?,
+          autofillHints: widget.autofillHints,
+          inputFormatters: widget.inputFormatters,
+          onTapOutside: (event) {
+            setState(() {
+              focusNode.unfocus();
+            });
           },
         ),
       ],

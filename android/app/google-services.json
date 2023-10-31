@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1055629992606",
+    "project_id": "pawrapets",
+    "storage_bucket": "pawrapets.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055629992606:android:9ca805976048f391ebd18f",
+        "android_client_info": {
+          "package_name": "com.pawrapet.pawrapet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYhDIa7eMuv3SnQotFeOa0NKz-zy_ajdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

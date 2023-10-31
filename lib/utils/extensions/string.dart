@@ -27,4 +27,15 @@ extension HandleValues on String? {
     }
     return valueString;
   }
+  String? extractFileName() {
+    RegExp regex = RegExp(r'\/([^\/]+)$');
+    Match? match = regex.firstMatch(this!);
+    if (match != null && match.groupCount >= 1) {
+      return match.group(1)!;
+    } else {
+      // If no match is found, return the original filePath
+      return this;
+    }
+  }
+
 }

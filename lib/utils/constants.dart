@@ -17,6 +17,8 @@ const double xSize = xSize8;
 late double xHeight, xWidth;
 // strings
 late String xLocalPath;
+// regex
+RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+$');
 // colors
 // const Color xPrimary = Color(0xFF2c4251);
 const Color xPrimary = Color(0xFF152F41);

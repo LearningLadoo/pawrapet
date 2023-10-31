@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pawrapet/screens/login/utils/functions.dart';
 import 'package:pawrapet/screens/login/utils/widgets.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
+import 'package:http/http.dart' as http;
 import 'package:pawrapet/utils/extensions/string.dart';
 import 'package:pawrapet/utils/functions/common.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
@@ -13,7 +16,9 @@ import '../../utils/widgets/common.dart';
 import '../../utils/widgets/displayText.dart';
 
 class LoginVerify extends StatefulWidget {
-  const LoginVerify({Key? key}) : super(key: key);
+  String uid, email;
+  int otpId;
+  LoginVerify({Key? key, required this.uid, required this.otpId, required this.email}) : super(key: key);
 
   @override
   State<LoginVerify> createState() => _LoginVerifyState();
@@ -139,13 +144,22 @@ class _LoginVerifyState extends State<LoginVerify> {
                 ),
                 const SizedBox().vertical(),
                 XRoundedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (code1==null||code2==null||code3==null||code4==null) {
                       _error = "Please fill all the fields";
                       setState(() {});
                       return;
                     }
-                    // todo : Add the verify logic here
+                    var url = Uri.parse('https://asia-south1-pawrapets.cloudfunctions.net/verifyLoginOTP');
+                    String bodyString = jsonEncode({'otp': int.parse('$code1$code2$code3$code4'), 'otpId': widget.otpId, 'UID': widget.uid, 'email': widget.email});
+                    var response = await http.post(url, body: bodyString, headers: {'Content-Type': 'application/json'});
+                    xPrint('Response status: ${response.statusCode} $bodyString');
+                    xPrint('Response body: ${response.body}');
+                    // todo add the loader
+                    // todo alert the user for success and failure
+                    Map body = jsonDecode(response.body);
+                    if(response.statusCode==200){
+                    }
                   },
                   text: "Verify",
                   expand: true,

@@ -33,6 +33,7 @@ import '../../utils/widgets/datePicker.dart';
 ///          url: "http://"
 ///       }
 ///   }
+///   timestamp: <epoch in seconds>
 /// }
 
 class Profile extends StatefulWidget {
