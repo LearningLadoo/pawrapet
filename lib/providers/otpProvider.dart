@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:pawrapet/firebase/functions.dart';
 import '../utils/functions/common.dart';
 
-enum OtpFlows { ideal, sending, sendingFailed, sent, verifying, verifyingFailed }
+enum OtpFlows { ideal, sending, sendingFailed, sent, verifying, verifyingFailed, verified }
 
 class OtpProvider with ChangeNotifier {
   OtpFlows otpFlow = OtpFlows.ideal;

@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pawrapet/providers/authProvider.dart';
+import 'package:pawrapet/screens/home/home.dart';
 import 'package:pawrapet/screens/loaderScreen.dart';
 import 'package:pawrapet/screens/welcome/welcome.dart';
 import 'package:pawrapet/utils/constants.dart';
+import 'package:pawrapet/utils/functions/common.dart';
 import 'package:pawrapet/utils/functions/paths.dart';
+import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 
@@ -30,8 +34,12 @@ class _InitializeState extends State<Initialize> {
         }
         // success handling
         else if (snapshot.connectionState == ConnectionState.done || snapshot.hasData == true) {
-          if(true){
+          AuthState authState = Provider.of<AuthProvider>(context, listen: false).authState;
+          xPrint("auth = $authState", header: 'intialize');
+          if(authState==AuthState.loggedOut){
             return const Welcome();
+          } else {
+            return const Home();
           }
         }
         // loading handling
@@ -50,6 +58,8 @@ Future<void> initializeApp(BuildContext context) async {
    await Firebase.initializeApp(
      options: DefaultFirebaseOptions.currentPlatform,
    );
+   // get the user auth
+  // AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
   // changing the bottom nav bar
   SystemChrome.setSystemUIOverlayStyle(xMySystemTheme);
   // location

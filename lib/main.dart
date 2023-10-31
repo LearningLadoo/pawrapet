@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pawrapet/initialize.dart';
+import 'package:pawrapet/providers/authProvider.dart';
+import 'package:pawrapet/providers/otpProvider.dart';
 import 'package:pawrapet/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp(
-  ));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => AuthProvider()),
+    ChangeNotifierProvider(create: (_) => OtpProvider()),
+  ], child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -16,7 +21,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Pawrapets',
       theme: lightTheme,
-      home: const Initialize()
+      home: const Initialize(),
     );
   }
 }
