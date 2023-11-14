@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pawrapet/initialize.dart';
+import 'package:pawrapet/main.dart';
 import 'package:pawrapet/providers/otpProvider.dart';
 import 'package:pawrapet/screens/login/utils/functions.dart';
 import 'package:pawrapet/screens/login/utils/widgets.dart';
 import 'package:pawrapet/utils/constants.dart';
+import 'package:pawrapet/utils/extensions/buildContext.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:http/http.dart' as http;
 import 'package:pawrapet/utils/extensions/string.dart';
@@ -37,18 +39,32 @@ class _LoginVerifyState extends State<LoginVerify> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(child: Stack(
-        children: [
-          Consumer<OtpProvider>(builder: (context, otpProvider, child) {
-            // starting the app from start if verified
-            if (otpProvider.otpFlow == OtpFlows.verified) return const Initialize();
-            // showing error if the verification failed
-            if (otpProvider.otpFlow == OtpFlows.verifyingFailed) {
-              _error = "sorry unable to verify OTP";
-              setState(() {});
-            }
-            return Padding(
+    OtpProvider otpProvider = Provider.of<OtpProvider>(context, listen: true);
+    // // so that it can go back
+    // if(otpProvider.otpFlow==OtpFlows.sent) otpProvider.setOtpFlow(OtpFlows.ideal);
+    // starting the app from start if verified
+    if (otpProvider.otpFlow == OtpFlows.verified) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        RestartWidget.restartApp(context);
+      });
+    }
+    // showing error if the verification failed
+    if (otpProvider.otpFlow == OtpFlows.verifyingFailed) {
+      _error = "sorry unable to verify OTP";
+      setState(() {});
+    }
+    return WillPopScope(
+      onWillPop: () async {
+        // make the sendOTP ideal
+        otpProvider.setOtpFlow(OtpFlows.ideal);
+        context.pop();
+        return true;
+      },
+      child: Scaffold(
+        body: SafeArea(
+            child: Stack(
+          children: [
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: xSize / 2),
               child: Column(
                 children: [
@@ -131,21 +147,23 @@ class _LoginVerifyState extends State<LoginVerify> {
                       ),
                     ],
                   ),
-                  if (_error != null) const SizedBox().vertical(),
-                  if (_error != null) xErrorText(context, _error!),
                   const SizedBox().vertical(),
                   InkWell(
                     onTap: () {
                       if (otpProvider.resendOtpTimer == 0) {
-                        // todo resend the verification code
+                        // make the sendOTP ideal
+                        otpProvider.setOtpFlow(OtpFlows.ideal, notify: true);
+                        context.pop();
                       }
                     },
                     child: Wrap(
                       alignment: WrapAlignment.center,
                       spacing: xSize1,
                       children: [
-                        Text("Haven't received?", style: xTheme.textTheme.bodySmall),
-                        (otpProvider.resendOtpTimer != 0) ? Text("Resend code after ${otpProvider.resendOtpTimer} seconds", style: xTheme.textTheme.bodySmall) : Text("Resend code", style: xTheme.textTheme.labelLarge),
+                        Text("Haven't received?", style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.8), fontSizeDelta: -1)),
+                        (otpProvider.resendOtpTimer != 0)
+                            ? Text("Resend code after ${otpProvider.resendOtpTimer} seconds", style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.6), fontSizeDelta: -1))
+                            : Text("Resend code", style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.8), fontSizeDelta: -1)),
                       ],
                     ),
                   ),
@@ -157,7 +175,7 @@ class _LoginVerifyState extends State<LoginVerify> {
                         setState(() {});
                         return;
                       }
-                      if(otpProvider.otpFlow == OtpFlows.verifying){
+                      if (otpProvider.otpFlow == OtpFlows.verifying) {
                         return;
                       }
                       xPrint("pressed", header: "login");
@@ -168,37 +186,46 @@ class _LoginVerifyState extends State<LoginVerify> {
                       // verifying the OTP and signing in
                       authProvider.verifyLoginOTPAndSignIn(context);
                     },
-                    text: "Verify",
+                    text: (otpProvider.otpFlow == OtpFlows.verifying) ? "Verifying . . ." : "Verify",
                     expand: true,
                     enabled: !(code1 == null || code2 == null || code3 == null || code4 == null) && otpProvider.otpFlow != OtpFlows.verifying,
                   ),
+                  if (_error != null) const SizedBox().vertical(),
+                  if (_error != null) xErrorText(context, _error!),
                 ],
               ),
-            );
-          }
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
-          ),
-          XAppBar(AppBarType.backWithHeading, title: "Verification"),
-        ],
-      )),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
+            ),
+            XAppBar(
+              AppBarType.backWithHeading,
+              title: "Verification",
+              onTapBack: () {
+                // make the sendOTP ideal
+                otpProvider.setOtpFlow(OtpFlows.ideal);
+                context.pop();
+              },
+            ),
+          ],
+        )),
+      ),
     );
   }
 
-  // void startVerificationTimer(int maxSeconds) async {
-  //   xPrint("timer started $maxSeconds");
-  //   for (int i = 0; i <= maxSeconds; i++) {
-  //     await Future.delayed(Duration(seconds: 1));
-  //     xPrint("timer started - $i");
-  //     timerCount = maxSeconds - i;
-  //     try {
-  //       setState(() {});
-  //     } catch (e) {
-  //       xPrint(e.toString());
-  //     }
-  //   }
-  // }
+// void startVerificationTimer(int maxSeconds) async {
+//   xPrint("timer started $maxSeconds");
+//   for (int i = 0; i <= maxSeconds; i++) {
+//     await Future.delayed(Duration(seconds: 1));
+//     xPrint("timer started - $i");
+//     timerCount = maxSeconds - i;
+//     try {
+//       setState(() {});
+//     } catch (e) {
+//       xPrint(e.toString());
+//     }
+//   }
+// }
 }

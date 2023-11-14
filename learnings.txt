@@ -34,3 +34,9 @@ generate documentation for flutter in following format
  doing compression in on step and returning Unit8List and saving file in next step, and returning that unit8List solved the problem.
 
  5) Unique Key creates multiple copies on setState
+
+ 6) So the initialize of the future builder was running again and again, I added an intializationAlreadyDone variable but still I was seeing the loader and the app was restarting again n again.
+ sol : the solution was to not return void but a bool, I dont know how it worked, but it was pretty amazing.
+
+ 7) analysis_options.yaml mein jaake i can change the rules of linter like     use_build_context_synchronously: false
+                                                                               prefer_relative_imports: true

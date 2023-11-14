@@ -22,7 +22,7 @@ class _HistoryPageState extends State<HistoryPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const XAppBar(
+             XAppBar(
               AppBarType.backWithHeading,
               title: "History",
             ),

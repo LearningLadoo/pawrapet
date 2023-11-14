@@ -8,24 +8,22 @@ import 'package:pawrapet/screens/mating/utils/5FinalPay.dart';
 import 'package:pawrapet/screens/mating/utils/6Feedback.dart';
 import 'package:pawrapet/screens/mating/utils/widgets/bottomNavigator.dart';
 import 'package:pawrapet/utils/constants.dart';
-import 'package:pawrapet/utils/extensions/colors.dart';
-import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
-import 'package:pawrapet/utils/widgets/buttons.dart';
-import 'package:pawrapet/utils/widgets/common.dart';
 
 class Mating extends StatefulWidget {
-  // todo get the map
-  const Mating({Key? key}) : super(key: key);
+  final String username;
+  final int flowStep;// 0 to 6 and -1 to fetch the latest flow step
+  const Mating({Key? key, required this.flowStep, required this.username}) : super(key: key);
 
   @override
   State<Mating> createState() => _MatingState();
 }
 
 class _MatingState extends State<Mating> {
-  String name = "Scooby"; // todo get this from map
+  late String name ;
+  late String userName;
   // managing flows
-  int flowIndex = 1; // 0 to 6
+  late int flowIndex;
   List<String> disabledFlowMessage = [
     'Sorry, no previous mating found. Once you completer the mating process you can see it here.',
     '',
@@ -44,6 +42,16 @@ class _MatingState extends State<Mating> {
     false,
     false,
   ];
+  @override
+  void initState() {
+    flowIndex = widget.flowStep;
+    userName = widget.username;
+    // todo fetch the details of the user and build the following via future builder
+    if(flowIndex ==-1){
+      // todo fetch the current flow index
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

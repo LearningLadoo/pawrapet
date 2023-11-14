@@ -4,6 +4,7 @@ import '../../utils/constants.dart';
 import '../../utils/widgets/appBar.dart';
 import 'utils/widgets/askAnything.dart';
 import 'utils/widgets/deleteAccount.dart';
+import 'utils/widgets/logOut.dart';
 import 'utils/widgets/editProfile.dart';
 import 'utils/widgets/govtId.dart';
 import 'utils/widgets/history.dart';
@@ -22,7 +23,7 @@ class _AccountState extends State<Account> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const XAppBar(
+        XAppBar(
           AppBarType.account,
           title: "Bruno",
         ),
@@ -43,15 +44,17 @@ class _AccountState extends State<Account> {
 
               ),
               const SizedBox().vertical(),
-              AskAnything(),
+              const AskAnything(),
               const SizedBox().vertical(),
               const ScheduleWidget(),
               const SizedBox().vertical(),
-              ManageRecords(),
+              const ManageRecords(),
               const SizedBox().vertical(),
-              History(),
+              const History(),
               const SizedBox().vertical(),
-              DeleteAccount()
+              const Logout(),
+              const SizedBox().vertical(),
+              const DeleteAccount()
             ],
           ),
         )

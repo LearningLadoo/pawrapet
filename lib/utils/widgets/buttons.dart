@@ -149,12 +149,14 @@ class _XColoredButtonState extends State<XColoredButton> {
 
 class XBackButton extends StatelessWidget {
   double size;
-  XBackButton({Key? key, this.size = xSize}) : super(key: key);
+  Function? onTap;
+  XBackButton({Key? key, this.size = xSize, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        if(onTap!=null)onTap!();
         context.pop();
       },
       child: SizedBox(

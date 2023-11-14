@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pawrapet/firebase/functions.dart';
 import '../utils/functions/common.dart';
 
-enum OtpFlows { ideal, sending, sendingFailed, sent, verifying, verifyingFailed, verified }
+enum OtpFlows { ideal, sending, sendingFailed, sent, busy, verifying, verifyingFailed, verified }
 
 class OtpProvider with ChangeNotifier {
   OtpFlows otpFlow = OtpFlows.ideal;
@@ -36,6 +37,7 @@ class OtpProvider with ChangeNotifier {
     for (int i = 0; i <= maxSeconds; i++) {
       await Future.delayed(const Duration(seconds: 1));
       _resendOtpTimer = maxSeconds - i;
+      xPrint(_resendOtpTimer.toString());
       if (notify) notifyListeners();
     }
   }

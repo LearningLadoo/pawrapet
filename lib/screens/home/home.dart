@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pawrapet/screens/account/Account.dart';
 import 'package:pawrapet/screens/home/utils/widgets/bottomNav.dart';
 import 'package:pawrapet/screens/petShop/petShop.dart';
-import '../notifications/notifications.dart';
+import '../notifications/notificationsScreen.dart';
 import '../search/search.dart';
 import 'feed.dart';
 
@@ -39,7 +39,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         return PetShop();
         break;
       case 3:
-        return Notifications();
+        return NotificationsScreen();
         break;
       case 4:
         return Search();

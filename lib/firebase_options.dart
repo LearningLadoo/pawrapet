@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -52,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1055629992606',
     projectId: 'pawrapets',
     authDomain: 'pawrapets.firebaseapp.com',
+    databaseURL: 'https://pawrapets-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pawrapets.appspot.com',
     measurementId: 'G-LQ1VH6GBVV',
   );
@@ -61,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:1055629992606:android:9ca805976048f391ebd18f',
     messagingSenderId: '1055629992606',
     projectId: 'pawrapets',
+    databaseURL: 'https://pawrapets-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pawrapets.appspot.com',
   );
 
@@ -69,6 +68,17 @@ class DefaultFirebaseOptions {
     appId: '1:1055629992606:ios:11cfa93addc6d742ebd18f',
     messagingSenderId: '1055629992606',
     projectId: 'pawrapets',
+    databaseURL: 'https://pawrapets-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'pawrapets.appspot.com',
+    iosBundleId: 'com.pawrapet.pawrapet',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyD-0RX4FRQUp9ut4T0cAU1j88JpUBvcdZM',
+    appId: '1:1055629992606:ios:11cfa93addc6d742ebd18f',
+    messagingSenderId: '1055629992606',
+    projectId: 'pawrapets',
+    databaseURL: 'https://pawrapets-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pawrapets.appspot.com',
     iosBundleId: 'com.pawrapet.pawrapet',
   );

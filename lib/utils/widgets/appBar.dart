@@ -14,8 +14,8 @@ class XAppBar extends StatelessWidget {
   final AppBarType type;
   final String? title;
   final String? username;
-
-  const XAppBar(this.type, {Key? key, this.title, this.username}) : super(key: key);
+  Function? onTapBack;
+  XAppBar(this.type, {Key? key, this.title, this.username, this.onTapBack}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class XAppBar extends StatelessWidget {
       case AppBarType.account:
         return const AccountAppBar();
       default:
-        return DefaultAppBar(type: type, title: title, username: username,);
+        return DefaultAppBar(type: type, title: title, username: username, onTapBack: onTapBack,);
     }
   }
 }
@@ -248,14 +248,15 @@ class _SearchAppBarState extends State<SearchAppBar> {
 class DefaultAppBar extends StatelessWidget {
   final String? title, username;
   final AppBarType type;
-  const DefaultAppBar({Key? key, required this.type, this.title, this.username}) : super(key: key);
+  Function? onTapBack;
+  DefaultAppBar({Key? key, required this.type, this.title, this.username, this.onTapBack}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         // back button
-        if (type == AppBarType.backWithHeading || type == AppBarType.profile || type == AppBarType.back) XBackButton(),
+        if (type == AppBarType.backWithHeading || type == AppBarType.profile || type == AppBarType.back) XBackButton(onTap: onTapBack,),
         // heading
         if (type == AppBarType.backWithHeading || type == AppBarType.profile || type == AppBarType.heading)
           Expanded(

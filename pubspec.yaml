@@ -27,6 +27,8 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+isar_version: &isar_version 3.1.0 # define the version to be used
+
 dependencies:
   flutter:
     sdk: flutter
@@ -44,14 +46,24 @@ dependencies:
   flutter_sticky_header: ^0.6.5
   firebase_core: ^2.18.0
   firebase_auth: ^4.12.0
+  shared_preferences: ^2.2.2
   http: ^1.1.0
+  url_launcher: ^6.2.1
   provider: ^6.0.5
+  cloud_firestore: ^4.10.0
+  device_info_plus: ^9.1.0
+  firebase_messaging: ^14.7.3
+  flutter_local_notifications: ^16.1.0
+  isar: *isar_version
+  isar_flutter_libs: *isar_version # contains Isar Core
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   flutter_native_splash: ^2.3.2
   flutter_launcher_icons: "^0.13.1"
+  isar_generator: *isar_version
+  build_runner: any
 
 flutter:
   uses-material-design: true

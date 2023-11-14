@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:pawrapet/firebase/messaging.dart';
+import 'package:pawrapet/sharedPrefs/sharedPrefs.dart';
 import 'package:pawrapet/utils/extensions/colors.dart';
+
+import '../isar/_isarManager.dart';
+import '../isar/notificationsManager.dart';
 
 late Map<String, dynamic> petsData;
 // to generate sizes
@@ -19,8 +25,21 @@ late double xHeight, xWidth;
 late String xLocalPath;
 // regex
 RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+$');
-// colors
-// const Color xPrimary = Color(0xFF2c4251);
+// to stop app from intitializing again n again
+bool xInitializationAlreadyRan = false;
+//firebase messaging
+FirebaseCouldMessaging xFirebaseMessaging = FirebaseCouldMessaging();
+// sharedPrefsInstance
+SharedPrefs xSharedPrefs = SharedPrefs();// colors
+// isar manager
+IsarManager xIsarManager = IsarManager();
+// NotificationsIsarManager
+NotificationsIsarManager xNotificationsIsarManager = NotificationsIsarManager();
+// todo assign my icon
+Image xMyIcon = Image.asset('assets/images/pet1.jpeg');
+// logo image
+Image xAppLogo = Image.asset('assets/icons/logo_mascot.png');
+//
 const Color xPrimary = Color(0xFF152F41);
 const Color xOnPrimary = Color(0xFFf8f0e5);
 const Color xSecondary = Color(0xFFd7dfd0);
