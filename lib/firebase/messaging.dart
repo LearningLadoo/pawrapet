@@ -66,28 +66,24 @@ class FirebaseCouldMessaging {
 // call this in the normal initialization to run in bg  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  xPrint("Handling a background message: ${message.messageId}", header: "backgroundMessage");
-  xPrint('Message data: ${message.data}', header: "backgroundMessage");
-  xPrint('Message notification: ${message.notification?.title}', header: "backgroundMessage");
-  xPrint('Message notification: ${message.notification?.body}', header: "backgroundMessage");
   // initialize
   await backgroundNotificationInitializer();
   // get message n show notification via local notification plugin
   await messageHandler(message);
 }
 
-Future<NotificationMessage> messageHandler(RemoteMessage message) async {
+Future<NotificationMessage?> messageHandler(RemoteMessage message) async {
+  xPrint("Handling a background message: ${message.messageId}", header: "messageHandler");
+  xPrint('Message data: ${message.data}', header: "messageHandler");
+  xPrint('Message notification: ${message.notification?.title}', header: "messageHandler");
+  xPrint('Message notification: ${message.notification?.body}', header: "messageHandler");
   Map data = message.data;
-  // todo do you really need to do following
-  //  json string of channelDetails to map
-  // Map channelDetails = jsonDecode(data['channelDetails']);
-  // data.addAll({'channelDetails': channelDetails});
   // if contains a variable of notify as true then only show notification
   if (data['notify'] == "true") {
     AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-      data['channelDetails']['id'],
-      data['channelDetails']['name'],
-      channelDescription: data['channelDetails']['description'],
+      data['channelId'],
+      data['channelInfo'],
+      channelDescription: data['channelInfo'],
       importance: Importance.max,
       priority: Priority.high,
     );

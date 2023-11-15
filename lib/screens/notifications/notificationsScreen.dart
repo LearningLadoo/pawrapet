@@ -1,40 +1,15 @@
-
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../../isar/notificationMessage.dart';
-import '../../isar/notificationsManager.dart';
-import '../../providers/firebaseMessagingProvider.dart';
-import 'package:provider/provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/widgets/appBar.dart';
 import 'utis/widgets/notificationTile.dart';
 
-class NotificationsScreen extends StatefulWidget {
-  @override
-  _NotificationsScreenState createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  List<NotificationMessage> notifications = [];
-  int offset = 0;
-  int batchSize = 20;
-
-  Future<void> getNotificationList({bool fromStart = false}) async {
-    notifications.addAll(await xNotificationsIsarManager.getBatchNotificationsToDisplay(profileId: 1, offset: offset, batchSize: batchSize));
-    offset = (fromStart)?0:batchSize;
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    getNotificationList(fromStart: true);
-    super.initState();
-  }
+class NotificationsScreen extends StatelessWidget {
+  const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<MessagingProvider>(context).message != null) {
-      getNotificationList();
-    }
     return Column(
       children: [
         XAppBar(
@@ -42,11 +17,24 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           title: "Notifications",
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: notifications.length,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return NotificationTile(notificationMessage: notifications[index]);
+          child: StreamBuilder<List<NotificationMessage>>(
+            // todo give the profile id
+            stream: xNotificationsIsarManager.getStreamOfDisplayedNotifications(profileId: 1),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 10);
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                List<NotificationMessage> data = snapshot.data ?? [];
+                // Use the data from the stream
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    return NotificationTile(notificationMessage: data[index], key: Key(data[index].id.toString()),);
+                  },
+                );
+              }
             },
           ),
         ),
@@ -54,5 +42,3 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 }
-
-

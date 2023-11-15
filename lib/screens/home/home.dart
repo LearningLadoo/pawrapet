@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pawrapet/screens/account/Account.dart';
 import 'package:pawrapet/screens/home/utils/widgets/bottomNav.dart';
 import 'package:pawrapet/screens/petShop/petShop.dart';
+import '../../utils/constants.dart';
 import '../notifications/notificationsScreen.dart';
 import '../search/search.dart';
 import 'feed.dart';

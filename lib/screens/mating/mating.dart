@@ -50,6 +50,7 @@ class _MatingState extends State<Mating> {
     if(flowIndex ==-1){
       // todo fetch the current flow index
     }
+    name = "kkk";
     super.initState();
   }
 

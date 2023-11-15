@@ -23,18 +23,23 @@ const NotificationMessageSchema = CollectionSchema(
       name: r'data',
       type: IsarType.string,
     ),
-    r'profileID': PropertySchema(
+    r'epoch': PropertySchema(
       id: 1,
-      name: r'profileID',
+      name: r'epoch',
+      type: IsarType.long,
+    ),
+    r'profileId': PropertySchema(
+      id: 2,
+      name: r'profileId',
       type: IsarType.long,
     ),
     r'removed': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'removed',
       type: IsarType.bool,
     ),
     r'seen': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'seen',
       type: IsarType.bool,
     )
@@ -70,9 +75,10 @@ void _notificationMessageSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.data);
-  writer.writeLong(offsets[1], object.profileID);
-  writer.writeBool(offsets[2], object.removed);
-  writer.writeBool(offsets[3], object.seen);
+  writer.writeLong(offsets[1], object.epoch);
+  writer.writeLong(offsets[2], object.profileId);
+  writer.writeBool(offsets[3], object.removed);
+  writer.writeBool(offsets[4], object.seen);
 }
 
 NotificationMessage _notificationMessageDeserialize(
@@ -83,11 +89,12 @@ NotificationMessage _notificationMessageDeserialize(
 ) {
   final object = NotificationMessage(
     data: reader.readString(offsets[0]),
-    id: id,
-    profileID: reader.readLongOrNull(offsets[1]),
-    removed: reader.readBoolOrNull(offsets[2]) ?? false,
-    seen: reader.readBoolOrNull(offsets[3]) ?? false,
+    epoch: reader.readLong(offsets[1]),
+    profileId: reader.readLongOrNull(offsets[2]),
+    removed: reader.readBoolOrNull(offsets[3]) ?? false,
+    seen: reader.readBoolOrNull(offsets[4]) ?? false,
   );
+  object.id = id;
   return object;
 }
 
@@ -101,10 +108,12 @@ P _notificationMessageDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -112,7 +121,7 @@ P _notificationMessageDeserializeProp<P>(
 }
 
 Id _notificationMessageGetId(NotificationMessage object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _notificationMessageGetLinks(
@@ -344,7 +353,81 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      idEqualTo(Id value) {
+      epochEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'epoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      epochGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'epoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      epochLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'epoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      epochBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'epoch',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -355,7 +438,7 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
       idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -369,7 +452,7 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
       idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -383,8 +466,8 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
       idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -400,63 +483,63 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDIsNull() {
+      profileIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'profileID',
+        property: r'profileId',
       ));
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDIsNotNull() {
+      profileIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'profileID',
+        property: r'profileId',
       ));
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDEqualTo(int? value) {
+      profileIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'profileID',
+        property: r'profileId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDGreaterThan(
+      profileIdGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'profileID',
+        property: r'profileId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDLessThan(
+      profileIdLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'profileID',
+        property: r'profileId',
         value: value,
       ));
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterFilterCondition>
-      profileIDBetween(
+      profileIdBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -464,7 +547,7 @@ extension NotificationMessageQueryFilter on QueryBuilder<NotificationMessage,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'profileID',
+        property: r'profileId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -517,16 +600,30 @@ extension NotificationMessageQuerySortBy
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
-      sortByProfileID() {
+      sortByEpoch() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileID', Sort.asc);
+      return query.addSortBy(r'epoch', Sort.asc);
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
-      sortByProfileIDDesc() {
+      sortByEpochDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileID', Sort.desc);
+      return query.addSortBy(r'epoch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
+      sortByProfileId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
+      sortByProfileIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileId', Sort.desc);
     });
   }
 
@@ -576,6 +673,20 @@ extension NotificationMessageQuerySortThenBy
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
+      thenByEpoch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'epoch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
+      thenByEpochDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'epoch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
       thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -590,16 +701,16 @@ extension NotificationMessageQuerySortThenBy
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
-      thenByProfileID() {
+      thenByProfileId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileID', Sort.asc);
+      return query.addSortBy(r'profileId', Sort.asc);
     });
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QAfterSortBy>
-      thenByProfileIDDesc() {
+      thenByProfileIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileID', Sort.desc);
+      return query.addSortBy(r'profileId', Sort.desc);
     });
   }
 
@@ -642,9 +753,16 @@ extension NotificationMessageQueryWhereDistinct
   }
 
   QueryBuilder<NotificationMessage, NotificationMessage, QDistinct>
-      distinctByProfileID() {
+      distinctByEpoch() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'profileID');
+      return query.addDistinctBy(r'epoch');
+    });
+  }
+
+  QueryBuilder<NotificationMessage, NotificationMessage, QDistinct>
+      distinctByProfileId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'profileId');
     });
   }
 
@@ -677,10 +795,16 @@ extension NotificationMessageQueryProperty
     });
   }
 
-  QueryBuilder<NotificationMessage, int?, QQueryOperations>
-      profileIDProperty() {
+  QueryBuilder<NotificationMessage, int, QQueryOperations> epochProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'profileID');
+      return query.addPropertyName(r'epoch');
+    });
+  }
+
+  QueryBuilder<NotificationMessage, int?, QQueryOperations>
+      profileIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'profileId');
     });
   }
 

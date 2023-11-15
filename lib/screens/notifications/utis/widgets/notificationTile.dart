@@ -6,6 +6,7 @@ import '../../../../utils/extensions/dateTime.dart';
 import '../../../../utils/extensions/sizedBox.dart';
 import '../../../../isar/notificationMessage.dart';
 import '../../../../utils/constants.dart';
+import '../../../../utils/functions/common.dart';
 import '../functions.dart';
 
 /// NotificationTypes {
@@ -40,9 +41,7 @@ class _NotificationTileState extends State<NotificationTile> {
     super.initState();
   }
 
-  late DateTime dt = DateTime.fromMillisecondsSinceEpoch(details['epoch']);
-
-
+  late DateTime dt = DateTime.fromMillisecondsSinceEpoch(int.parse(details['epoch']));
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +64,9 @@ class _NotificationTileState extends State<NotificationTile> {
           children: [
             // A SlidableAction can have an icon and/or a label
             SlidableAction(
-              onPressed: (context) {},
+              onPressed: (context) {
+                xNotificationsIsarManager.markRemoved(widget.notificationMessage);
+              },
               backgroundColor: xOnPrimary,
               foregroundColor: xOnError,
               icon: Icons.delete_rounded,

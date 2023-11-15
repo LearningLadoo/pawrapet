@@ -10,6 +10,7 @@ import 'package:pawrapet/providers/firebaseMessagingProvider.dart';
 import 'package:pawrapet/sharedPrefs/sharedPrefs.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'isar/_isarManager.dart';
 import 'providers/authProvider.dart';
 import 'screens/home/home.dart';
 import 'screens/loaderScreen.dart';
@@ -74,7 +75,7 @@ Future<bool> initializeApp(BuildContext context) async {
   // initialize xFirebaseMessaging
   await xFirebaseMessaging.initialize();
   // activating the listener
-  Provider.of<MessagingProvider>(context, listen: false);
+  Provider.of<MessagingProvider>(context, listen: false).initialize();
   // set the user auth and manage tokens for FCM
   await Provider.of<AuthProvider>(context, listen: false).initializeAuth(context);
   // changing the bottom nav bar
@@ -89,6 +90,7 @@ Future<bool> initializeApp(BuildContext context) async {
 // background notification
 Future<void> backgroundNotificationInitializer()async{
   // initialize the isar
+  xIsarManager = IsarManager();
   await xIsarManager.initialize();
   return;
 }

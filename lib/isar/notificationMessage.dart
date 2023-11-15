@@ -6,12 +6,13 @@ part 'notificationMessage.g.dart';
 
 @collection
 class NotificationMessage {
-  late Id id; // epoch of arrival
+  Id? id; // auto-generated
   late bool seen; // if the notification is seen or interacted with
   late String data; // Json data
-  int? profileID;
+  int? profileId;
   late bool removed; // if the notification is removed
-  NotificationMessage({required this.id, required this.data, this.seen = false, this.profileID, this.removed = false});
+  late int epoch; // epoch
+  NotificationMessage({ required this.data, this.seen = false, this.profileId, this.removed = false, required this.epoch});
 
   Map getDataMap(){
     return jsonDecode(data);
