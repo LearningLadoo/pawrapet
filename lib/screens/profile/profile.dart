@@ -529,7 +529,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       );
                     }
-                    return
+                    return waitingDogLottie();
                   }),
             ),
           ],
