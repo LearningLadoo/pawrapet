@@ -25,13 +25,14 @@ Future<void> gettingLocalPath() async {
 ///       -> icon_0.jpg
 ///       -> main_0.jpg
 ///     -> posts
+
 enum ProfileImageType { icon, main }
 
-String getProfileImagesPath({required String username, required ProfileImageType type, int index = 0, String ext = "jpg"}) {
-  String dir = "$xLocalPath/myPets/$username/profile";
+String getProfileImagesPath({required int profileNo, required String type, int index = 0, String ext = "jpg"}) {
+  String dir = "$xLocalPath/myPets/$profileNo/profile";
   // creating directory if it doesn't exist
   if (!Directory(dir).existsSync()) {
     Directory(dir).createSync(recursive: true);
   }
-  return "$dir/${type.name}_$index.$ext";
+  return "$dir/${type}_$index.$ext";
 }

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pawrapet/firebase/messaging.dart';
-import 'package:pawrapet/isar/notificationsManager.dart';
-import '../isar/notificationMessage.dart' as isar_notification;
+import 'package:pawrapet/isar/notificationMessage/notificationsManager.dart';
+import '../isar/notificationMessage/notificationMessage.dart' as isar_notification;
 import '../utils/functions/common.dart';
 
 class MessagingProvider with ChangeNotifier {

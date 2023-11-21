@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'notificationMessage.dart';
+import 'notificationMessage/notificationMessage.dart';
 
 bool _inspect = true;
 

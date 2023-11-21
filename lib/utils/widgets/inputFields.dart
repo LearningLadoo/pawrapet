@@ -959,7 +959,7 @@ class _XTextFieldWithPickerState extends State<XTextFieldWithPicker> {
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: xSize * 5.5),
                       child: Text(
-                        path.extractFileName()!,
+                        path.extractFileNameFromPath()!,
                         style: xTheme.textTheme.labelMedium!.apply(
                           fontSizeDelta: -2,
                           color: xOnSecondary.withOpacity(0.9),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../isar/notificationMessage.dart';
+import '../../isar/notificationMessage/notificationMessage.dart';
 import '../../utils/constants.dart';
+import '../../utils/functions/common.dart';
 import '../../utils/widgets/appBar.dart';
 import 'utis/widgets/notificationTile.dart';
 
@@ -22,7 +23,7 @@ class NotificationsScreen extends StatelessWidget {
             stream: xNotificationsIsarManager.getStreamOfDisplayedNotifications(profileId: 1),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 10);
+                return waitingDogLottie();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {

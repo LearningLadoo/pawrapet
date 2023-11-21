@@ -34,7 +34,7 @@ class _AccountState extends State<Account> {
             children: [
               Row(
                 children: [
-                  Expanded(flex: 2, child: editProfile()),
+                  const Expanded(flex: 2, child: EditProfile()),
                   const SizedBox().horizontal(),
                   Expanded(
                     flex: 1,

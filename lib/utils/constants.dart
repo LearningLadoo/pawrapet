@@ -5,8 +5,8 @@ import 'package:pawrapet/firebase/messaging.dart';
 import 'package:pawrapet/sharedPrefs/sharedPrefs.dart';
 import 'package:pawrapet/utils/extensions/colors.dart';
 
-import '../isar/_isarManager.dart';
-import '../isar/notificationsManager.dart';
+import '../isar/isarManager.dart';
+import '../isar/notificationMessage/notificationsManager.dart';
 
 late Map<String, dynamic> petsData;
 // to generate sizes

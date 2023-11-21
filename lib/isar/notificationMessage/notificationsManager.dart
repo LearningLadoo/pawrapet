@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:isar/isar.dart';
 
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
 import 'notificationMessage.dart';
 
 class NotificationsIsarManager {
@@ -47,6 +47,5 @@ class NotificationsIsarManager {
     notification.removed = true;
     await xIsarManager.db.writeTxn(() async => await xIsarManager.db.notificationMessages.put(notification));
   }
-  // todo create a listener
 
 }

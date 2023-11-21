@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import '../../../../isar/notificationsManager.dart';
+import '../../../../isar/notificationMessage/notificationsManager.dart';
 import '../../../../utils/extensions/dateTime.dart';
 import '../../../../utils/extensions/sizedBox.dart';
-import '../../../../isar/notificationMessage.dart';
+import '../../../../isar/notificationMessage/notificationMessage.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/functions/common.dart';
 import '../functions.dart';

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pawrapet/firebase/firestore.dart';
-import 'package:pawrapet/isar/notificationMessage.dart';
-import 'package:pawrapet/isar/notificationsManager.dart';
+import 'package:pawrapet/isar/notificationMessage/notificationMessage.dart';
+import 'package:pawrapet/isar/notificationMessage/notificationsManager.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/functions/common.dart';
 

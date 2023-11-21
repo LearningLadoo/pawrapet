@@ -7,11 +7,13 @@ class FirebaseCloudFirestore {
   // variables
   late FirebaseFirestore db;
   late CollectionReference<Map<String, dynamic>> collectionUID;
+  late CollectionReference<Map<String, dynamic>> collectionUser;
 
   //constructor
   FirebaseCloudFirestore() {
     db = FirebaseFirestore.instance;
     collectionUID = db.collection("UIDs");
+    collectionUser = db.collection("users");
   }
 
   // get user details from UID
@@ -24,6 +26,7 @@ class FirebaseCloudFirestore {
       return null;
     }
   }
+
   // to update if the FCM token changes
   Future<bool> updateNotificationId(String uid, String deviceId, String token) async {
     try {
@@ -33,6 +36,17 @@ class FirebaseCloudFirestore {
       return true;
     } catch (e) {
       xPrint(e.toString(), header: 'FirebaseCloudFirestore/updateNotificationId');
+      return false;
+    }
+  }
+
+  /// add to profile update logs then on create cloud function will trigger and save details
+  Future<bool> addNewProfile(String uidPN, Map<String, dynamic> profileMap) async {
+    try {
+      await collectionUser.doc(uidPN).collection('profileUpdateLogs').doc(DateTime.now().millisecondsSinceEpoch.toString()).set(profileMap);
+      return true;
+    } catch (e) {
+      xPrint(e.toString(), header: 'FirebaseCloudFirestore/addNewProfile');
       return false;
     }
   }

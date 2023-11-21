@@ -10,7 +10,7 @@ import 'package:pawrapet/providers/firebaseMessagingProvider.dart';
 import 'package:pawrapet/sharedPrefs/sharedPrefs.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'isar/_isarManager.dart';
+import 'isar/isarManager.dart';
 import 'providers/authProvider.dart';
 import 'screens/home/home.dart';
 import 'screens/loaderScreen.dart';

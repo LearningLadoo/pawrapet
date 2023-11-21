@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import '../constants.dart';
 
@@ -12,4 +13,5 @@ bool xContainsDate(List<DateTime> list, DateTime date){
   }
   return false;
 }
+Widget waitingDogLottie() => Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 10);
 

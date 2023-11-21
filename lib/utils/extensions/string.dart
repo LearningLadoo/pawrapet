@@ -27,7 +27,7 @@ extension HandleValues on String? {
     }
     return valueString;
   }
-  String? extractFileName() {
+  String? extractFileNameFromPath() {
     RegExp regex = RegExp(r'\/([^\/]+)$');
     Match? match = regex.firstMatch(this!);
     if (match != null && match.groupCount >= 1) {
@@ -37,5 +37,13 @@ extension HandleValues on String? {
       return this;
     }
   }
-
+  String? extractFileNameFromLink(){
+    if (this == null) return null;
+    Uri uri = Uri.parse(this!);
+    // Get the file name from the path
+    String fileName = uri.pathSegments.last;
+    // Decoding percent-encoded characters in the file name
+    fileName = Uri.decodeComponent(fileName);
+    return fileName;
+  }
 }
