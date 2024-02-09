@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pawrapet/firebase/messaging.dart';
-import 'package:pawrapet/isar/notificationMessage/notificationsManager.dart';
+import '../firebase/messaging.dart';
 import '../isar/notificationMessage/notificationMessage.dart' as isar_notification;
 import '../utils/functions/common.dart';
 
@@ -12,7 +11,8 @@ class MessagingProvider with ChangeNotifier {
 
   isar_notification.NotificationMessage? get message => _message;
 
-  initialize() async {xPrint("started listening messages", header: "FirebaseMessagingProvider");
+  initialize() async {
+    xPrint("started listening messages", header: "FirebaseMessagingProvider");
     // start listening
     _listenToFirebaseMessages();
   }
@@ -22,7 +22,8 @@ class MessagingProvider with ChangeNotifier {
     _messageStream.cancel();
     super.dispose();
   }
- // foreground listener
+
+  // foreground listener
   void _listenToFirebaseMessages() {
     _messageStream = FirebaseMessaging.onMessage.listen((message) async {
       try {

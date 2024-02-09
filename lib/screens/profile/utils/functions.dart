@@ -1,15 +1,6 @@
-
 import '../../../utils/functions/common.dart';
 
-Future<bool> saveProfileDetails(Map details)async{
-  try {
-    return true;
-  } catch (e) {
-    xPrint(e.toString(), header: "saveProfileDetails");
-    return false;
-  }
-}
-Map getDefaultProfileMap(){
+Map<String, dynamic> getDefaultProfileMap() {
   return {
     "name": null,
     "type": null,
@@ -23,14 +14,14 @@ Map getDefaultProfileMap(){
     "weight": null,
     "amount": null,
     "assets": {
-      "icon_0": {
-        "ext": null,
+      "icon_0": Map<String, dynamic>.from({
+        "ext": "jpg",
         "url": null,
-      },
-      "main_0": {
-        "ext": null,
+      }),
+      "main_0": Map<String, dynamic>.from({
+        "ext": "jpg",
         "url": null,
-      },
+      }),
     }
   };
 }

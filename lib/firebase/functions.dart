@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:pawrapet/utils/constants.dart';
-import 'package:pawrapet/utils/functions/idsChasKeys.dart';
-
+import '../utils/constants.dart';
+import '../utils/functions/idsChasKeys.dart';
 import '../utils/functions/common.dart';
 
 class FirebaseCloudFunctions {
@@ -25,6 +23,18 @@ class FirebaseCloudFunctions {
     try {
       var url = Uri.parse('$mumbaiFnPath/verifyLoginOTP');
       String bodyString = jsonEncode({'otp': otp, 'otpId': otpId, 'UID': uid, 'email': email, 'cha': getChas(), ...xSharedPrefs.deviceInfoMap!});
+      return await http.post(url, body: bodyString, headers: {'Content-Type': 'application/json'});
+    } catch (e) {
+      xPrint(e.toString());
+      return null;
+    }
+  }
+
+  // verify login OTP
+  Future<http.Response?> setupNewProfile(String username, String uid, int pn) async {
+    try {
+      var url = Uri.parse('$mumbaiFnPath/setupNewProfile');
+      String bodyString = jsonEncode({'username': username, 'pn': pn, 'UID': uid, 'cha': getChas()});
       return await http.post(url, body: bodyString, headers: {'Content-Type': 'application/json'});
     } catch (e) {
       xPrint(e.toString());

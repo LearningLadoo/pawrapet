@@ -1,22 +1,26 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pawrapet/utils/extensions/buildContext.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/functions/common.dart';
 import '../../../utils/widgets/heart.dart';
 import '../../account/Account.dart';
 import '../../mating/mating.dart';
-import '../../profile/profile.dart';
+import '../../profile/profileDisplay.dart';
+import '../../profile/profileScreen.dart';
 
 Widget getInitialWidget(Map details) {
   switch (details['type']) {
     case 'myself':
-      return CircleAvatar(radius: xSize, backgroundImage: xMyIcon.image);
+      return CircleAvatar(radius: xSize, backgroundImage: xMyIcon().image);
     case 'mating':
       ImageProvider partnerIcon = Image.network(details['iconUrl']).image;
       return XHeartWithImage(
         height: xSize * 2,
-        iconL: xMyIcon.image,
+        iconL: xMyIcon().image,
         iconR: partnerIcon,
       );
     default:
@@ -35,6 +39,7 @@ void onTapNotification(BuildContext context, Map details) async {
   List separatedLink = redirectLink.split("://");
   String type = separatedLink[0];
   String path = separatedLink[1];
+  // todo profile mein log in bhi karna padega
   switch (type) {
     case "https":
       if (!await launchUrl(Uri.parse(redirectLink))) {
@@ -45,10 +50,15 @@ void onTapNotification(BuildContext context, Map details) async {
       List separatedPath = path.split("/");
       switch (separatedPath[0]) {
         case 'editProfile':
-          context.push(const Profile());
+          // todo not functional
+          break;
+        case 'profile':
+          // todo get feed map
+          context.push(ProfileDisplay(feedMap: {}));
           break;
         case 'mating':
           // the schema for path is mating/<username>/<step>
+        // todo make username to uid
           context.push(Mating(username: separatedPath[1]!, flowStep: int.parse(separatedPath[2])));
           break;
         case 'account':

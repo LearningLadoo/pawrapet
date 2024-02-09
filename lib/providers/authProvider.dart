@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:pawrapet/firebase/firestore.dart';
-import 'package:pawrapet/firebase/functions.dart';
-import 'package:pawrapet/providers/otpProvider.dart';
+import '../firebase/firestore.dart';
+import '../firebase/functions.dart';
+import 'otpProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../main.dart';
 import '../utils/constants.dart';
 import '../utils/functions/common.dart';
@@ -42,7 +40,7 @@ class AuthProvider with ChangeNotifier {
     _firebaseUser = FirebaseAuth.instance.currentUser;
     if (_firebaseUser == null) {
       // offload app data
-      await offloadAppData();
+      resetAuthDetails();
     } else {
       // setup user sharedPrefs
       _authState = AuthState.loggedIn;
@@ -60,7 +58,10 @@ class AuthProvider with ChangeNotifier {
           currUserMap = {
             "email": tempMap["email"],
             "UID": _uid,
+            "username": tempMap["username"],
             "verified": tempMap["verified"],
+            "profiles": tempMap["profiles"],
+            "onboardEpoch": tempMap["onboardEpoch"],
           };
           await xSharedPrefs.setCurrUser(jsonEncode(currUserMap));
         }
@@ -128,6 +129,7 @@ class AuthProvider with ChangeNotifier {
     otpProvider.setOtpFlow(OtpFlows.verifying, notify: true);
     // get the response
     Response? res = await FirebaseCloudFunctions().verifyLoginOTP(preLoginMap["email"], preLoginMap["UID"], preLoginMap["OTP"], preLoginMap["OTPid"]);
+
     // res null check
     if (res != null) {
       // creating map
@@ -142,9 +144,11 @@ class AuthProvider with ChangeNotifier {
           preLoginMap['authToken'],
         );
         // initialize
-        initializeAuth(context);
+        await initializeAuth(context);
         // change the OTP Flow to otp sent
         otpProvider.setOtpFlow(OtpFlows.verified, notify: true);
+      } else {
+        xPrint("error ${resMap!['error']}");
       }
     }
     // if some error then change the OTP Flow to failed
@@ -171,7 +175,7 @@ class AuthProvider with ChangeNotifier {
   Future<bool> offloadAppData() async{
     resetAuthDetails();
     await xSharedPrefs.clear();
-    // todo also offload isar data here
+    await xIsarManager.clearAll();
     return true;
   }
 }

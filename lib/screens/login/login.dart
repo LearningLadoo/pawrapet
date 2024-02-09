@@ -1,13 +1,9 @@
-import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pawrapet/providers/authProvider.dart';
-import 'package:pawrapet/providers/otpProvider.dart';
-import 'package:pawrapet/screens/login/loginVerify.dart';
-import 'package:pawrapet/utils/extensions/buildContext.dart';
-import 'package:pawrapet/utils/extensions/string.dart';
+import '../../providers/authProvider.dart';
+import '../../providers/otpProvider.dart';
+import 'loginVerify.dart';
 import 'package:provider/provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/extensions/sizedBox.dart';
@@ -55,9 +51,15 @@ class _LoginState extends State<Login> {
       setState(() {});
     }
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
           child: Stack(
         children: [
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: xSize / 2),
             child: Column(
@@ -72,7 +74,7 @@ class _LoginState extends State<Login> {
                   keyboardType: TextInputType.text,
                   onChangedFn: (String? value) {
                     setState(() {
-                      _email = value!.trim();
+                      _email = value?.trim().toLowerCase();
                       _error = null;
                     });
                     xPrint(_email);
@@ -83,7 +85,7 @@ class _LoginState extends State<Login> {
                 const SizedBox().vertical(),
                 XRoundedButton(
                   onPressed: () async {
-                    if (!(_email != null && emailRegEx.hasMatch(_email!))) {
+                    if (!(_email != null && EmailValidator.validate(_email!) && !_email!.contains("+"))) {
                       _error = "Please check the email you have entered";
                       setState(() {});
                       return;
@@ -101,18 +103,13 @@ class _LoginState extends State<Login> {
                   },
                   text: (otpProvider.otpFlow == OtpFlows.sending) ? "Sending OTP . . ." : "Send OTP",
                   expand: true,
-                  enabled: (_email != null && emailRegEx.hasMatch(_email!) && otpProvider.otpFlow == OtpFlows.ideal && otpProvider.resendOtpTimer == 0),
+                  enabled: (_email != null && EmailValidator.validate(_email!) && !_email!.contains("+") && otpProvider.otpFlow == OtpFlows.ideal && otpProvider.resendOtpTimer == 0),
                 ),
                 const SizedBox().vertical(),
                 // Text("${otpProvider.otpFlow} ${otpProvider.resendOtpTimer}"),
                 if(otpProvider.resendOtpTimer!=0)Text("Resend code after ${otpProvider.resendOtpTimer} seconds", style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.6), fontSizeDelta: -1)),
               ],
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
           ),
           XAppBar(AppBarType.backWithHeading, title: "Login"),
         ],

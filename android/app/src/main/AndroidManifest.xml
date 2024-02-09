@@ -45,9 +45,12 @@
        </receiver>
 
    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 <!--    so that local notification plugin can reschedule the notification after reboot-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!--so that we can get a rough location of the user to assign mating center-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- added for url_launcher -->
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>

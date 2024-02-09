@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -13,5 +14,10 @@ bool xContainsDate(List<DateTime> list, DateTime date){
   }
   return false;
 }
-Widget waitingDogLottie() => Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 10);
-
+Image xMyIcon(){
+  try{
+    return Image.memory(base64Decode(xProfile!.icon!));
+  }catch(e){
+    return xAppLogo;
+  }
+}

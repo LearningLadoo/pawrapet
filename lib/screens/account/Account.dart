@@ -25,7 +25,6 @@ class _AccountState extends State<Account> {
       children: [
         XAppBar(
           AppBarType.account,
-          title: "Bruno",
         ),
         Expanded(
           child: ListView(

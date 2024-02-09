@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'notificationMessage/notificationMessage.dart';
+import 'profile/profile.dart';
 
 bool _inspect = true;
 
@@ -22,7 +23,7 @@ class IsarManager {
     final dir = await getApplicationDocumentsDirectory();
     if (Isar.instanceNames.isEmpty) {
       return await Isar.open(
-        [NotificationMessageSchema],
+        [NotificationMessageSchema, ProfileSchema],
         inspector: _inspect,
         name: "v1",
         directory: dir.path,

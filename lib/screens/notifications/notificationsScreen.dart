@@ -4,6 +4,7 @@ import '../../isar/notificationMessage/notificationMessage.dart';
 import '../../utils/constants.dart';
 import '../../utils/functions/common.dart';
 import '../../utils/widgets/appBar.dart';
+import '../../utils/widgets/common.dart';
 import 'utis/widgets/notificationTile.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class NotificationsScreen extends StatelessWidget {
             stream: xNotificationsIsarManager.getStreamOfDisplayedNotifications(profileId: 1),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return waitingDogLottie();
+                return dogWaitLoader("Please wait while we get your notifications.");
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {

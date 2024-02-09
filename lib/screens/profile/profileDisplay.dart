@@ -11,41 +11,42 @@ import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/heart.dart';
 
 class ProfileDisplay extends StatefulWidget {
-  const ProfileDisplay({Key? key}) : super(key: key);
+  Map<String, dynamic> feedMap; // refer [feed.dart]
+  Map<String, dynamic>? assetsMapWithImageProvider; // with image provider, this is passed when seeing a preview
+  ProfileDisplay({Key? key, required this.feedMap, this.assetsMapWithImageProvider}) : super(key: key);
 
   @override
   State<ProfileDisplay> createState() => _ProfileDisplayState();
 }
 
 class _ProfileDisplayState extends State<ProfileDisplay> {
-  late String _name, _type, _colour, _breed, _gender, _birthDate, _personality;
-  String? _description;
-  late String _username;
-  late double _height, _weight;
-  double? _amount;
   late ImageProvider _iconImage, _mainImage;
-  ImageProvider? _iconI, _iconThey;
-  late bool _iLiked, _theyLiked;
+
+  ImageProvider? _iconYou, _iconThey;
+
+  late bool _youLiked, _theyLiked;
 
   @override
   void initState() {
-    _username = "userTemp";
-    _name = "tanna";
-    _type = "dog";
-    _colour = "cream";
-    _breed = "Rehapta chaap";
-    _gender = "female";
-    _birthDate = "08/11/1999";
-    _personality = "cute, chutiya, ladaku, pyari";
-    _description = "Woof! I'm Scooby, a friendly Labrador with a wagging tail and a heart full of love. Ready to fetch some fun and spread pawsitive vibes wherever I go! 🐾";
-    _height = 110;
-    _weight = 55;
-    _amount = 150;
-    _iconImage = Image.asset("assets/images/pet1.jpeg").image;
-    _mainImage = Image.asset("assets/images/pet1_image.jpeg").image;
-    _iLiked = false;
-    _theyLiked = false;
-    _iconThey = _iconImage;
+    _iconImage = widget.assetsMapWithImageProvider != null ? widget.assetsMapWithImageProvider!["icon_0"]["image"] : Image.network(widget.feedMap['profile']['assets']['icon_0']['url']).image;
+    _mainImage = widget.assetsMapWithImageProvider != null ? widget.assetsMapWithImageProvider!["main_0"]["image"] : Image.network(widget.feedMap['profile']['assets']['main_0']['url']).image;
+
+    // for self preview
+    if (widget.assetsMapWithImageProvider != null) {
+      _iconThey = _iconImage;
+      _iconYou = _iconImage;
+      _youLiked = false;
+      _theyLiked = true;
+    }
+    // for real
+    else {
+      _iconThey = _iconImage;
+      _iconYou = xMyIcon().image;
+      _theyLiked = widget.feedMap['users'].contains(xProfile!.uidPN);
+      _youLiked = ((xProfile!.requestedUsersForMatch) ?? "").contains(widget.feedMap['uidPN'] ?? "0");
+    }
+    Map<String, dynamic> temp = {};
+    // temp.containsKey(key)
     super.initState();
   }
 
@@ -59,7 +60,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
               height: xHeight,
               child: Column(
                 children: [
-                  XAppBar(AppBarType.profile, title: _name, username: _username),
+                  XAppBar(AppBarType.profile, title: widget.feedMap['profile']['name'], username: widget.feedMap['profile']['username']),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -82,14 +83,14 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${_colour.capitalizeFirstOfEach}, $_breed",
+                                      "${widget.feedMap['profile']['colour'].capitalizeFirstOfEach}, ${widget.feedMap['profile']['breed']}",
                                       style: xTheme.textTheme.bodyMedium!.apply(fontSizeDelta: 1, fontWeightDelta: 1),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Opacity(
                                       opacity: 0.8,
                                       child: Text(
-                                        "${_gender.capitalizeFirstOfEach}, ${DateTime(0).fromddMMyyyy(_birthDate).calculateYears()} years${(_amount != null || _amount! != 0) ? "\n₹${_amount.toString().removeTrailingZeros()} per mating" : ""}",
+                                        "${widget.feedMap['profile']['gender'].capitalizeFirstOfEach}, ${DateTime(0).fromddMMyyyy(widget.feedMap['profile']['birthDate'].toString()).calculateYears()} years${(widget.feedMap['profile']['amount'] != null || widget.feedMap['profile']['amount']! != 0) ? "\n₹${widget.feedMap['profile']['amount'].toString().removeTrailingZeros()} per mating" : ""}",
                                         style: xTheme.textTheme.bodyMedium!.apply(fontSizeDelta: -4, fontWeightDelta: 1),
                                       ),
                                     ),
@@ -101,16 +102,20 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                           const SizedBox().vertical(size: xSize * 3 / 4),
                           // description
                           Text(
-                            "$_description",
+                            widget.feedMap['profile']['description'],
                             style: xTheme.textTheme.bodySmall,
                           ),
                           const SizedBox().vertical(),
                           // main Image
-                          ClipRRect(borderRadius: BorderRadius.circular(xSize2), child: Image(image: _mainImage)),
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(xSize2),
+                              child: Image(
+                                image: _mainImage,
+                              )),
                           const SizedBox().vertical(),
                           // height and weight
                           Text(
-                            "I have a proud height of ${_height.toString().removeTrailingZeros()} cm and I weigh a healthy ${_weight.toString().removeTrailingZeros()} kgs. I'm $_personality.",
+                            "I have a proud height of ${widget.feedMap['profile']['height'].toString().removeTrailingZeros()} cm and I weigh a healthy ${widget.feedMap['profile']['weight'].toString().removeTrailingZeros()} kgs. I'm ${widget.feedMap['profile']['personality']}.",
                             style: xTheme.textTheme.bodySmall,
                           ),
                           const SizedBox().vertical(size: xSize / 4),
@@ -150,16 +155,32 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                   alignment: Alignment.topCenter,
                                   child: XHeartWithImageButton(
                                     height: 80,
-                                    iconL: _iconI,
-                                    iconR: _iconThey,
-                                    onTap: () {
+                                    iconR: _theyLiked ? _iconThey : null,
+                                    iconL: _youLiked ? _iconYou : null,
+                                    onTap: () async {
                                       setState(() {
-                                        if (_iconI == null) {
-                                          _iconI = _iconImage;
-                                        } else {
-                                          _iconI = null;
-                                        }
+                                        _youLiked = !_youLiked;
                                       });
+                                      if (widget.assetsMapWithImageProvider == null) return;
+                                      // todo update the cloud, create a cloud function to trigger the other user
+                                      //  update the variables and isar here
+                                      // todo uncomment all this
+                                      // if (_youLiked) {
+                                      //   xProfile!.requestedUsersForMatch!.add(widget.feedMap['uidPN']);
+                                      //   await xProfileIsarManager.setProfile(xProfile!);
+                                      // } else {
+                                      //   xProfile!.requestedUsersForMatch!.remove(widget.feedMap['uidPN']);
+                                      //   await xProfileIsarManager.setProfile(xProfile!);
+                                      // }
+                                      // todo update the sub collection of matingRequests in firestore
+                                      // todo <this will be trigger with on create in mating requests>
+                                      // todo send notifications to both that this user liked the other user
+                                      // todo update the requestedUsersForMatch in the user details
+                                      // todo check if the other user also liked then
+                                      // todo    send the notification that the match is created
+                                      // todo    create session id in the collection mating if not present
+                                      // todo    mating session sub collection
+
                                     },
                                   ),
                                 ),

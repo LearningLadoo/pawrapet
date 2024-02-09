@@ -2,9 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
+import '../../screens/home/filter.dart';
+import '../extensions/buildContext.dart';
 import '../extensions/sizedBox.dart';
 
 import '../constants.dart';
+import '../extensions/string.dart';
+import '../functions/common.dart';
 import 'buttons.dart';
 import 'heart.dart';
 
@@ -49,7 +53,7 @@ class FeedAppBar extends StatefulWidget {
 
 class _FeedAppBarState extends State<FeedAppBar> {
   bool _matingsPressed = false;
-  ImageProvider _myIcon = Image.asset("assets/images/pet1.jpeg").image;
+  ImageProvider _myIcon = xMyIcon().image;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,7 @@ class _FeedAppBarState extends State<FeedAppBar> {
               GestureDetector(
                 onTap: () {
                   //todo take to the settings page and get details from the on an saved function
+                  context.push(FiltersPage());
                 },
                 child: Icon(
                   Icons.filter_alt_rounded,
@@ -186,7 +191,7 @@ class AccountAppBar extends StatefulWidget {
 }
 
 class _AccountAppBarState extends State<AccountAppBar> {
-  bool isChecked = false;
+  bool isChecked = xProfile!.isFindingMate;
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +199,7 @@ class _AccountAppBarState extends State<AccountAppBar> {
       children: [
         Expanded(
           child: Text(
-            "Hi Bruno",
+            "Hi ${xProfile!.name!.inCaps}",
             style: xTheme.textTheme.titleLarge!.apply(fontWeightDelta: -1, color: xPrimary.withOpacity(0.9)),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,

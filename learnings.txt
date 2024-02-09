@@ -40,3 +40,12 @@ generate documentation for flutter in following format
 
  7) analysis_options.yaml mein jaake i can change the rules of linter like     use_build_context_synchronously: false
                                                                                prefer_relative_imports: true
+8) so whenever you dont want something to not run again, like when the keyboard appears in a stateful widget then make sure to create a widget of that in initstate
+ refer future builder of [profile.dart]
+
+ 9) mujhe exactly to nahi samjha but regex is not good for email validation
+
+ 10) Problem with infinite scroll paganation (eg loading 10 posts then as soon as last one is reached the next 10 are loaded) so the problem is with the limitation of firebase, because I applied less than or greater than in the amount field its not possible for me to order by time stamp.
+ so for now as the scale is pretty small then we will just call all the posts but that needs to change in future.
+ Possibly. But why do you need to fetch it time wise ? So that I can get next posts on scrolling till the end and get latest on refresh.
+ but is that necessary now ? no its not.

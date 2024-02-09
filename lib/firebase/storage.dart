@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
-
 import '../utils/extensions/map.dart';
 import '../utils/functions/common.dart';
 import '../utils/functions/paths.dart';
@@ -9,9 +7,9 @@ import '../utils/functions/paths.dart';
 class FirebaseCloudStorage {
   // variables
   late FirebaseStorage db;
-  String _firebaseStoragePath = "https://firebasestorage.googleapis.com/v0/b/pawrapets.appspot.com/o";
+  final String _firebaseStoragePath = "https://firebasestorage.googleapis.com/v0/b/pawrapets.appspot.com/o";
 
-  FirebaseCloudFirestore() {
+  FirebaseCloudStorage() {
     db = FirebaseStorage.instance;
   }
 
@@ -25,10 +23,13 @@ class FirebaseCloudStorage {
   Future<Map?> addProfileImages(String uidPN, Map<String, dynamic> assets) async {
     List<Future<String?>> promises = [];
     Map tempMap = assets.deepClone();
+    xPrint("temp map - $tempMap", header: 'FirebaseCloudStorage/addProfileImages');
     try {
       // add the promises for whatever the operation is
-      assets.keys.map((i) {
+      for (var i in assets.keys) {
         String relFilePathInBucket = "users/$uidPN/$i.${assets[i]['ext']}";
+        xPrint("path $relFilePathInBucket", header: 'FirebaseCloudStorage/addProfileImages');
+
         String localFilePath = getProfileImagesPath(profileNo: int.parse(uidPN.split("_")[1]), type: i.split("_")[0], index: int.parse(i.split("_")[1]), ext: assets[i]['ext']);
         switch (assets[i]['url']) {
           case 'remove':
@@ -37,24 +38,31 @@ class FirebaseCloudStorage {
           case 'add':
             promises.add(addAsset(relFilePathInBucket, File(localFilePath)));
             break;
-          default:
+          case null:
             promises.add(Future<String?>.value(null));
+            break;
+          default:
+            // this should be url
+            promises.add(Future<String>.value(assets[i]['url']));
         }
-      });
+      }
       List<String?> outputs = await Future.wait(promises);
       // assign in the cloned map
       int j = 0;
-      assets.keys.map((i){
+      for (var i in assets.keys) {
         switch (assets[i]['url']) {
           case 'add':
             tempMap[i]['url'] = outputs[j];
             break;
           case 'remove':
+          case null:
+            tempMap[i]['url'] = null;
+            break;
           default:
-          tempMap[i]['url'] = null;
+            tempMap[i]['url'] = outputs[j];
         }
         j++;
-      });
+      }
       return tempMap;
     } catch (e) {
       xPrint(e.toString(), header: 'FirebaseCloudStorage/addProfileImages');

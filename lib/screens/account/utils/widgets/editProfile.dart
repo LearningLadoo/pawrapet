@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../../utils/extensions/buildContext.dart';
-import '../../../profile/profile.dart';
+import '../../../../utils/functions/common.dart';
+import '../../../profile/profileScreen.dart';
 import '/../utils/constants.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
+
 class EditProfile extends StatelessWidget {
   const EditProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        context.push(Profile());
+      onTap: () {
+        context.push(ProfileScreen());
       },
       child: Container(
         height: xSize * 3,
@@ -24,7 +26,7 @@ class EditProfile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              backgroundImage: Image.asset("assets/images/pet1.jpeg").image,
+              backgroundImage: xMyIcon().image,
               radius: xSize,
             ),
             const SizedBox().horizontal(size: xSize / 4),
@@ -38,12 +40,13 @@ class EditProfile extends StatelessWidget {
                     style: xTheme.textTheme.headlineMedium!.apply(color: xPrimary.withOpacity(0.8)),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox().vertical(size: xSize / 16),
-                  Text(
-                    "₹5000 per mating",
-                    overflow: TextOverflow.ellipsis,
-                    style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.8), fontSizeDelta: -1),
-                  ),
+                  if (xProfile!.amount != null) const SizedBox().vertical(size: xSize / 16),
+                  if (xProfile!.amount != null)
+                    Text(
+                      "₹${xProfile!.amount!.round()} per mating",
+                      overflow: TextOverflow.ellipsis,
+                      style: xTheme.textTheme.bodySmall!.apply(color: xPrimary.withOpacity(0.8), fontSizeDelta: -1),
+                    ),
                 ],
               ),
             )

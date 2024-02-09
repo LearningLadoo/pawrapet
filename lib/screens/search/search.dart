@@ -3,6 +3,7 @@ import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 
 import '../../utils/constants.dart';
+import '../../utils/functions/common.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ Widget searchWidget(){
   return Row(
     children: [
       CircleAvatar(
-        backgroundImage: Image.asset("assets/images/pet1.jpeg").image,
+        backgroundImage: xMyIcon().image,
         radius: xSize,
       ),
       SizedBox().horizontal(size: xSize/4),

@@ -12,7 +12,7 @@ class LoaderScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SizedBox(
-          width: xWidth,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -22,7 +22,7 @@ class LoaderScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
                   "assets/images/element2.png",
-                  width: xWidth,
+                  width: MediaQuery.of(context).size.width,
                   height: xSize*2,
                 ),
               ),
@@ -33,7 +33,7 @@ class LoaderScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Image.asset(
                   "assets/images/element2.png",
-                  width: xWidth,
+                  width: MediaQuery.of(context).size.width,
                   height: xSize*2,
                 ),
               ),

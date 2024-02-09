@@ -57,5 +57,8 @@
           <string>sms</string>
           <string>tel</string>
         </array>
+        <!-- added for location>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>This app needs access to get approximate location of the user in order to assign them mating centers </string>
 	</dict>
 </plist>

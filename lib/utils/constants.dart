@@ -7,6 +7,8 @@ import 'package:pawrapet/utils/extensions/colors.dart';
 
 import '../isar/isarManager.dart';
 import '../isar/notificationMessage/notificationsManager.dart';
+import '../isar/profile/profile.dart';
+import '../isar/profile/profileManager.dart';
 
 late Map<String, dynamic> petsData;
 // to generate sizes
@@ -23,8 +25,6 @@ const double xSize = xSize8;
 late double xHeight, xWidth;
 // strings
 late String xLocalPath;
-// regex
-RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+$');
 // to stop app from intitializing again n again
 bool xInitializationAlreadyRan = false;
 //firebase messaging
@@ -35,8 +35,10 @@ SharedPrefs xSharedPrefs = SharedPrefs();// colors
 IsarManager xIsarManager = IsarManager();
 // NotificationsIsarManager
 NotificationsIsarManager xNotificationsIsarManager = NotificationsIsarManager();
-// todo assign my icon
-Image xMyIcon = Image.asset('assets/images/pet1.jpeg');
+// ProfileIsarManager
+ProfileIsarManager xProfileIsarManager = ProfileIsarManager();
+// profile
+Profile? xProfile;
 // logo image
 Image xAppLogo = Image.asset('assets/icons/logo_mascot.png');
 //

@@ -5,12 +5,13 @@ import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/extensions/string.dart';
 
 import '../../../../utils/constants.dart';
+import '../../../../utils/functions/common.dart';
 import '../../../../utils/widgets/heart.dart';
 import '../../../profile/profileDisplay.dart';
 
 class FindingPartnerWidget extends StatefulWidget {
 
-  Map<String, dynamic> postDetails;
+  Map<dynamic, dynamic> postDetails;
 
   FindingPartnerWidget({Key? key, required this.postDetails}) : super(key: key);
 
@@ -32,17 +33,17 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
   void initState() {
     // TODO: get the following details from the map;
     _username = "userTemp";
-    _name = "tanna";
+    _name = "Temp Name";
     _type = "dog";
-    _breed = "Rehapta chaap";
+    _breed = "breed name";
     _gender = "female";
     _birthDate = "08/11/1999";
-    _personality = "cute, chutiya, ladaku, pyari";
+    _personality = "angry, faithful, cute";
     _height = 110;
     _weight = 55;
     _amount = 150;
     // TODO: add the image from the url from the map
-    _iconImage = Image.asset("assets/images/pet1.jpeg").image;
+    _iconImage = xMyIcon().image;
     _mainImage = Image.asset("assets/images/pet1_image.jpeg").image;
     // TODO: check your liked image
     _youLiked = false;
@@ -152,7 +153,7 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                           return GestureDetector(
                             onTap: (){
                               // todo pass the map of user
-                              context.push(ProfileDisplay());
+                              context.push(ProfileDisplay(feedMap: {},));
                             },
                             child: Container(
                               decoration: BoxDecoration(

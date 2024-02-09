@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../constants.dart';
 
@@ -27,16 +28,12 @@ Widget xHeaderBanner(String text) {
 }
 
 // glass bg effect
-Widget xGlassBgEffect({double? height, double? width, required Widget child}){
-  return ClipRect(
+Widget xGlassBgEffect({double? height, double? width, required Widget child, Color? bgColor, double? borderRadius}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius ?? 0),
     child: BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-      child: Container(
-          color: xOnSurface.withOpacity(0.2),
-          width: width,
-          height: height,
-          child: child
-      ),
+      child: Container(color: bgColor ?? xOnSurface.withOpacity(0.2), width: width, height: height, child: child),
     ),
   );
 }
@@ -71,7 +68,11 @@ class _RatingState extends State<Rating> {
             setState(() {});
             widget.onChanged(rating);
           },
-          child: Icon(CupertinoIcons.star_fill,size: xSize*1.5, color: ((rating??0)>=1)?Colors.yellow[800]:xPrimary.withOpacity(0.15),),
+          child: Icon(
+            CupertinoIcons.star_fill,
+            size: xSize * 1.5,
+            color: ((rating ?? 0) >= 1) ? Colors.yellow[800] : xPrimary.withOpacity(0.15),
+          ),
         ),
         GestureDetector(
           onTap: () {
@@ -79,7 +80,11 @@ class _RatingState extends State<Rating> {
             setState(() {});
             widget.onChanged(rating);
           },
-          child: Icon(CupertinoIcons.star_fill,size: xSize*1.5, color: ((rating??0)>=2)?Colors.yellow[800]:xPrimary.withOpacity(0.15),),
+          child: Icon(
+            CupertinoIcons.star_fill,
+            size: xSize * 1.5,
+            color: ((rating ?? 0) >= 2) ? Colors.yellow[800] : xPrimary.withOpacity(0.15),
+          ),
         ),
         GestureDetector(
           onTap: () {
@@ -87,7 +92,11 @@ class _RatingState extends State<Rating> {
             setState(() {});
             widget.onChanged(rating);
           },
-          child: Icon(CupertinoIcons.star_fill,size: xSize*1.5, color: ((rating??0)>=3)?Colors.yellow[800]:xPrimary.withOpacity(0.15),),
+          child: Icon(
+            CupertinoIcons.star_fill,
+            size: xSize * 1.5,
+            color: ((rating ?? 0) >= 3) ? Colors.yellow[800] : xPrimary.withOpacity(0.15),
+          ),
         ),
         GestureDetector(
           onTap: () {
@@ -95,7 +104,11 @@ class _RatingState extends State<Rating> {
             setState(() {});
             widget.onChanged(rating);
           },
-          child: Icon(CupertinoIcons.star_fill,size: xSize*1.5, color: ((rating??0)>=4)?Colors.yellow[800]:xPrimary.withOpacity(0.15),),
+          child: Icon(
+            CupertinoIcons.star_fill,
+            size: xSize * 1.5,
+            color: ((rating ?? 0) >= 4) ? Colors.yellow[800] : xPrimary.withOpacity(0.15),
+          ),
         ),
         GestureDetector(
           onTap: () {
@@ -103,9 +116,28 @@ class _RatingState extends State<Rating> {
             setState(() {});
             widget.onChanged(rating);
           },
-          child: Icon(CupertinoIcons.star_fill,size: xSize*1.5, color: ((rating??0)>=5)?Colors.yellow[800]:xPrimary.withOpacity(0.15),),
+          child: Icon(
+            CupertinoIcons.star_fill,
+            size: xSize * 1.5,
+            color: ((rating ?? 0) >= 5) ? Colors.yellow[800] : xPrimary.withOpacity(0.15),
+          ),
         ),
       ],
     );
   }
+}
+
+// loader
+Widget dogWaitLoader(String? loaderText) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 20),
+      Text(
+        loaderText ?? "",
+        style: xTheme.textTheme.bodySmall,
+        textAlign: TextAlign.center,
+      ),
+    ],
+  );
 }

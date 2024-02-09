@@ -22,8 +22,6 @@ class _LogoutState extends State<Logout> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        FirebaseCloudFunctions().sendTestNotification();
-        return;
         logoutPressed = true;
         setState(() {});
         await Provider.of<AuthProvider>(context, listen: false).logout(context);

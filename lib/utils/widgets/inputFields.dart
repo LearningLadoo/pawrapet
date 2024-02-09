@@ -73,21 +73,21 @@ class _XTextFieldState extends State<XTextField> {
           decoration: InputDecoration(
             filled: true,
             isDense: true,
-            fillColor: widget.backgroundColor??xSecondary.withOpacity(0.8),
+            fillColor: widget.backgroundColor ?? xSecondary.withOpacity(0.8),
             hintText: widget.hintText,
             hintMaxLines: widget.lines ?? 1,
             hintStyle: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(color: xOnSecondary.withOpacity(0.5)),
             contentPadding: const EdgeInsets.symmetric(horizontal: xSize / 3, vertical: xSize / 3),
             border: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: widget.backgroundColor??xSecondary),
+              borderSide: BorderSide(width: 0, color: widget.backgroundColor ?? xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
           ),
@@ -666,6 +666,20 @@ class _XWrapChipsWithHeadingAndAddFromListState extends State<XWrapChipsWithHead
   }
 
   @override
+  void didUpdateWidget(covariant XWrapChipsWithHeadingAndAddFromList oldWidget) {
+    if(oldWidget.list!=widget.list){
+      selectedList = [...widget.initialList];
+      for (String i in [...selectedList]) {
+          if (widget.list.contains(i)) {
+            widget.list.remove(i);
+          } else {
+            selectedList.remove(i);
+          }
+        }
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+  @override
   Widget build(BuildContext context) {
     return Wrap(
       runSpacing: xSize / 4,
@@ -805,7 +819,8 @@ class _XSearchFieldWithFilterState extends State<XSearchFieldWithFilter> {
             fillColor: xPrimary.withOpacity(0.1),
             hintText: widget.hintText ?? "Search",
             hintStyle: (widget.textStyle ?? xTheme.textTheme.bodyLarge)!.copyWith(color: xOnSecondary.withOpacity(0.5)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: xSize/4, vertical: 0), // padding in the left or right is already 0,
+            contentPadding: const EdgeInsets.symmetric(horizontal: xSize / 4, vertical: 0),
+            // padding in the left or right is already 0,
             border: OutlineInputBorder(
               borderSide: const BorderSide(width: 0, color: xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
@@ -818,37 +833,37 @@ class _XSearchFieldWithFilterState extends State<XSearchFieldWithFilter> {
               borderSide: const BorderSide(width: 0, color: xSecondary),
               borderRadius: BorderRadius.circular(xSize2),
             ),
-            prefixIcon: (!focusNode.hasFocus) ?  SizedBox(
-              child: InkWell(
-                onTap: () {
-                },
-                child: Icon(
-                  // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
-                  Icons.search_rounded,
-                  size: xSize,
-                  color: xPrimary.withOpacity(0.3),
-                ),
-              ),
-            ):null,
+            prefixIcon: (!focusNode.hasFocus)
+                ? SizedBox(
+                    child: InkWell(
+                      onTap: () {},
+                      child: Icon(
+                        // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
+                        Icons.search_rounded,
+                        size: xSize,
+                        color: xPrimary.withOpacity(0.3),
+                      ),
+                    ),
+                  )
+                : null,
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if(focusNode.hasFocus) SizedBox().horizontal(size: xSize / 6),
-                if(focusNode.hasFocus) InkWell(
-                  onTap: () {
-                    textEditingController.text = "";
-                    // todo call the onChanged here
-                    setState(() {
-
-                    });
-                  },
-                  child: Icon(
-                    // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
-                     Icons.close,
-                    size: xSize,
-                    color: xPrimary.withOpacity(0.7),
+                if (focusNode.hasFocus) SizedBox().horizontal(size: xSize / 6),
+                if (focusNode.hasFocus)
+                  InkWell(
+                    onTap: () {
+                      textEditingController.text = "";
+                      // todo call the onChanged here
+                      setState(() {});
+                    },
+                    child: Icon(
+                      // focusNode.hasFocus ? CupertinoIcons.clear : CupertinoIcons.search,
+                      Icons.close,
+                      size: xSize,
+                      color: xPrimary.withOpacity(0.7),
+                    ),
                   ),
-                ),
                 SizedBox().horizontal(size: xSize / 6),
                 InkWell(
                   onTap: () {
@@ -856,7 +871,7 @@ class _XSearchFieldWithFilterState extends State<XSearchFieldWithFilter> {
                   },
                   child: Icon(
                     // CupertinoIcons.slider_horizontal_3,
-                   Icons.filter_alt_rounded,
+                    Icons.filter_alt_rounded,
                     size: xSize,
                     color: xPrimary.withOpacity(0.7),
                   ),

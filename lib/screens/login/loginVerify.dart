@@ -1,20 +1,14 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pawrapet/initialize.dart';
-import 'package:pawrapet/main.dart';
-import 'package:pawrapet/providers/otpProvider.dart';
-import 'package:pawrapet/screens/login/utils/functions.dart';
-import 'package:pawrapet/screens/login/utils/widgets.dart';
-import 'package:pawrapet/utils/constants.dart';
-import 'package:pawrapet/utils/extensions/buildContext.dart';
-import 'package:pawrapet/utils/extensions/sizedBox.dart';
-import 'package:http/http.dart' as http;
-import 'package:pawrapet/utils/extensions/string.dart';
-import 'package:pawrapet/utils/functions/common.dart';
-import 'package:pawrapet/utils/widgets/appBar.dart';
-import 'package:pawrapet/utils/widgets/buttons.dart';
-import 'package:pawrapet/utils/widgets/inputFields.dart';
+import '../../main.dart';
+import '../../providers/otpProvider.dart';
+import '../../utils/constants.dart';
+import '../../utils/extensions/buildContext.dart';
+import '../../utils/extensions/sizedBox.dart';
+import '../../utils/functions/common.dart';
+import '../../utils/widgets/appBar.dart';
+import '../../utils/widgets/buttons.dart';
+import '../../utils/widgets/inputFields.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/authProvider.dart';
@@ -61,9 +55,15 @@ class _LoginVerifyState extends State<LoginVerify> {
         return true;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Stack(
           children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: xSize / 2),
               child: Column(
@@ -194,11 +194,6 @@ class _LoginVerifyState extends State<LoginVerify> {
                   if (_error != null) xErrorText(context, _error!),
                 ],
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: SizedBox(height: xSize * 2.5, child: Image.asset("assets/images/element2.png")),
             ),
             XAppBar(
               AppBarType.backWithHeading,
