@@ -109,14 +109,19 @@ class FirebaseCloudFirestore {
     }
   }
 
-  Future<List<DocumentSnapshot>> getNextMatingProfiles(Map filters, List<DocumentSnapshot> posts) async {
+  Future<List<DocumentSnapshot>?> getMatingProfiles(Map? filters, List<DocumentSnapshot> prePosts) async {
     try {
-      Query query = getQueryFromFilterMap(filters);
-      query = query.where("isFindingMate", isEqualTo: true);
-      return (await query.limit(1000).startAfterDocument(posts.last).get()).docs;
+      xPrint("get Mating Profiles ran", header: "getMatingProfiles");
+      await Future.delayed(Duration(seconds: 10));
+      // if(prePosts.length==9) throw "fake error";
+      // create the query
+      // Query query = getQueryFromFilterMap(filters);
+      // query = query.where("isFindingMate", isEqualTo: true);
+      Query query = collectionUser;
+      // if prePosts is empty then fetch initial posts else the next posts
+      return (await (prePosts.isEmpty ? query.limit(4).get() : query.limit(4).startAfterDocument(prePosts.last).get())).docs;
     } catch (e) {
-      xPrint(e.toString(), header: "getNextMatingProfiles");
-      return [];
+      xPrint(e.toString(), header: "getMatingProfiles");
     }
   }
 

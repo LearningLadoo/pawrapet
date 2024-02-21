@@ -5,6 +5,7 @@ import '../extensions/sizedBox.dart';
 
 import '../constants.dart';
 import '../widgets/common.dart';
+import 'common.dart';
 
 Future<void> xShowDialog({required BuildContext context, required String heading, required String content, Widget? bottomWidget}) {
   return showDialog<void>(
@@ -43,6 +44,10 @@ Future<void> xShowDialog({required BuildContext context, required String heading
 enum MessageType { error, success, info }
 
 void xSnackbar(BuildContext context, String message, {MessageType type = MessageType.info, Duration? duration}) {
+  if(!context.mounted){
+    xPrint("the widget or context is not mounted", header: "xSnackbar");
+    return;
+  }
   late Color fontColor;
   late Color bgColor;
   bgColor = Colors.grey;

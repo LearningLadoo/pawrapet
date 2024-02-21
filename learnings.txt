@@ -49,3 +49,6 @@ generate documentation for flutter in following format
  so for now as the scale is pretty small then we will just call all the posts but that needs to change in future.
  Possibly. But why do you need to fetch it time wise ? So that I can get next posts on scrolling till the end and get latest on refresh.
  but is that necessary now ? no its not.
+ # so one of my idea was to simplify it by taking leverage of how impeller works, i.e. building the widget as soon as it appears on the screen and use the recursion to build as soon as the last widget shows.
+ It worked but only when i used ListView builder and nest them withing each other. which lead to scrolling issue.
+
