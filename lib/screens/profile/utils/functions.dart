@@ -4,7 +4,7 @@ Map<String, dynamic> getDefaultProfileMap() {
   return {
     "name": null,
     "type": null,
-    "colour": null,
+    "color": null,
     "breed": null,
     "gender": null,
     "birthDate": null,
@@ -12,7 +12,7 @@ Map<String, dynamic> getDefaultProfileMap() {
     "description": null,
     "height": null,
     "weight": null,
-    "amount": null,
+    "amount": 0,
     "assets": {
       "icon_0": Map<String, dynamic>.from({
         "ext": "jpg",

@@ -138,7 +138,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                                 profileMap['type'] = value;
                                 // resetting the values
                                 profileMap['breed'] = null;
-                                profileMap['colour'] = null;
+                                profileMap['color'] = null;
                                 profileMap['gender'] = null;
                                 setState(() {});
                                 xPrint("selected type - $value");
@@ -182,7 +182,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                             ),
                             const SizedBox().vertical(),
                             XDropDownField(
-                              hintText: "Colour",
+                              hintText: "color",
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.text,
                               list: (profileMap['type'] == null || profileMap['breed'] == null) ? [] : List<String>.from(petsData[profileMap['type']][profileMap['breed']]["colors"].toList()),
@@ -193,7 +193,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                                 }
                               },
                               onSelected: (String? value) {
-                                profileMap['colour'] = value;
+                                profileMap['color'] = value;
                                 setState(() {});
                                 xPrint("selected breed - $value");
                               },
@@ -204,7 +204,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                             const SizedBox().vertical(),
                             XRoundedButton(
                               onPressed: () {
-                                if (profileMap['name'] == null || profileMap['type'] == null || profileMap['breed'] == null || profileMap['colour'] == null || profileMap['gender'] == null) {
+                                if (profileMap['name'] == null || profileMap['type'] == null || profileMap['breed'] == null || profileMap['color'] == null || profileMap['gender'] == null) {
                                   _error = "Please fill all the details";
                                   setState(() {});
                                   return;
@@ -213,7 +213,7 @@ class _ProfileQuickState extends State<ProfileQuick> {
                               },
                               text: "Continue",
                               expand: true,
-                              enabled: !(profileMap['name'] == null || profileMap['type'] == null || profileMap['breed'] == null || profileMap['colour'] == null || profileMap['gender'] == null),
+                              enabled: !(profileMap['name'] == null || profileMap['type'] == null || profileMap['breed'] == null || profileMap['color'] == null || profileMap['gender'] == null),
                             ),
                           ],
                         ),

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 
 import '../constants.dart';
@@ -129,15 +131,32 @@ class _RatingState extends State<Rating> {
 
 // loader
 Widget dogWaitLoader(String? loaderText) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+  return Stack(
+    // mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Lottie.asset("assets/lotties/dog_happy_waiting.json", width: xSize * 20),
-      Text(
-        loaderText ?? "",
-        style: xTheme.textTheme.bodySmall,
-        textAlign: TextAlign.center,
+      Lottie.asset("assets/lotties/dog_happy_walk.json", width: xSize * 10),
+      Positioned(
+        bottom: xSize*1,
+        child: SizedBox(
+          width: xSize * 10,
+          child: Text(
+            loaderText ?? "",
+            style: xTheme.textTheme.labelLarge,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     ],
+  );
+}
+
+/// disables the child widget by reducing opacity and absorbing pointers and also throws snackbar as alert message
+Widget xDisableWithAlert({required Widget child, required BuildContext context, required String alertMessage, required bool isDisabled}) {
+  return Opacity(
+    opacity: isDisabled?0.5:1,
+    child: AbsorbPointer(
+      absorbing: isDisabled,
+      child: child,
+    ),
   );
 }

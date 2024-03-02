@@ -52,3 +52,6 @@ generate documentation for flutter in following format
  # so one of my idea was to simplify it by taking leverage of how impeller works, i.e. building the widget as soon as it appears on the screen and use the recursion to build as soon as the last widget shows.
  It worked but only when i used ListView builder and nest them withing each other. which lead to scrolling issue.
 
+11) the query fails if even one of document is not accessed by the security rules.
+
+12) using if(<condition>) <Widget> is not right approach because there is a list of children, and the whole indexes of the children can change on condition its better to use (condition)?<Widget>:Center

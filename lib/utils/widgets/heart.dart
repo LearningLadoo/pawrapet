@@ -171,7 +171,7 @@ class _LeftClipperPainter extends CustomPainter {
     // canvas.drawPath(path_0,paint_0_stroke);
 
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
-    paint_0_fill.color = xSecondary;
+    paint_0_fill.color = xOnPrimary.withOpacity(1);
     canvas.drawPath(path_0,paint_0_fill);
 
     // return canvas;
@@ -229,7 +229,7 @@ class _RightClipperPainter extends CustomPainter {
     // canvas.drawPath(path_0,paint_0_stroke);
 
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
-    paint_0_fill.color = xSecondary;
+    paint_0_fill.color = xOnPrimary.withOpacity(1);
     canvas.drawPath(path_0,paint_0_fill);
 
     // return canvas;

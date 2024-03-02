@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawrapet/utils/widgets/inputFields.dart';
-import '../../screens/home/filter.dart';
+import '../../screens/home/preferences.dart';
 import '../extensions/buildContext.dart';
 import '../extensions/sizedBox.dart';
 
@@ -74,7 +74,7 @@ class _FeedAppBarState extends State<FeedAppBar> {
               GestureDetector(
                 onTap: () {
                   //todo take to the settings page and get details from the on an saved function
-                  context.push(FiltersPage());
+                  context.push(PreferencesPage());
                 },
                 child: Icon(
                   Icons.filter_alt_rounded,

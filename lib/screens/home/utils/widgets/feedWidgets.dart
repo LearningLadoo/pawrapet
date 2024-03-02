@@ -3,65 +3,51 @@ import 'package:pawrapet/utils/extensions/buildContext.dart';
 import 'package:pawrapet/utils/extensions/dateTime.dart';
 import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/extensions/string.dart';
-
+import '../../../../firebase/firestore.dart';
 import '../../../../utils/constants.dart';
-import '../../../../utils/functions/common.dart';
 import '../../../../utils/widgets/heart.dart';
 import '../../../profile/profileDisplay.dart';
 
 class FindingPartnerWidget extends StatefulWidget {
+  final Map<String, dynamic> feedMap;
 
-  Map<dynamic, dynamic> postDetails;
-
-  FindingPartnerWidget({Key? key, required this.postDetails}) : super(key: key);
+  const FindingPartnerWidget({Key? key, required this.feedMap}) : super(key: key);
 
   @override
   State<FindingPartnerWidget> createState() => _FindingPartnerWidgetState();
 }
 
 class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
-  late String _chips;
   late bool _theyLiked, _youLiked;
   late ImageProvider _iconImage, _mainImage;
-  late String _name, _type, _breed, _gender, _birthDate, _personality;
-  late String _username, _status, _postedDate;
-  late double _height, _weight;
+  late String _status;
   late double? _amount;
-  late  List<String> _chipsList;
-  int? _days;
+  late List<String> _chipsList;
+  int? _days, _age;
+
   @override
   void initState() {
-    // TODO: get the following details from the map;
-    _username = "userTemp";
-    _name = "Temp Name";
-    _type = "dog";
-    _breed = "breed name";
-    _gender = "female";
-    _birthDate = "08/11/1999";
-    _personality = "angry, faithful, cute";
-    _height = 110;
-    _weight = 55;
-    _amount = 150;
-    // TODO: add the image from the url from the map
-    _iconImage = xMyIcon().image;
-    _mainImage = Image.asset("assets/images/pet1_image.jpeg").image;
-    // TODO: check your liked image
-    _youLiked = false;
-    // Todo: check the users list from the map
-    _theyLiked = true;
-    // Todo: check the status from the map
+    _amount = (widget.feedMap['amount'] ?? 0)*1.0;
+    _iconImage = Image.network(widget.feedMap['assets']['icon_0']['url']).image;
+    _mainImage = Image.network(widget.feedMap['assets']['main_0']['url']).image;
+    _theyLiked = widget.feedMap['requestedUsersForMatch']?[xProfile!.uidPN] == true;
+    _youLiked = xProfile!.requestedUsersForMatch[widget.feedMap['uidPN']] == true;
+    // Todo: change this if you have make it social media
     _status = "finding partner";
-    _postedDate = "1/10/2023";
-    _chips =
-    "$_type,$_breed,${DateTime(0).fromddMMyyyy(_birthDate).calculateYears()} yrs,$_gender,${_weight.toString().removeTrailingZeros()} Kg,${_height.toString().removeTrailingZeros()} cm,$_personality";
-
-    _chipsList = _chips.split(",");
-    if(_chipsList.length>8){
-      _chipsList = _chipsList.sublist(0,8);
+    _age = DateTime(0).fromddMMyyyy(widget.feedMap['birthDate']).calculateYears();
+    // set up the chips that will be displayed
+    String chips = "${widget.feedMap['type']},"
+        "${widget.feedMap['breed']},"
+        "${(_age == 0 ? "<1" : _age)} yrs,"
+        "${widget.feedMap['gender']},${widget.feedMap['weight'].toString().removeTrailingZeros()} Kg,"
+        "${widget.feedMap['height'].toString().removeTrailingZeros()} cm,"
+        "${widget.feedMap['personality']}";
+    _chipsList = chips.split(",");
+    if (_chipsList.length > 7) {
+      _chipsList = _chipsList.sublist(0, 7);
     }
-    _chipsList.add("Show Full >>");
-    _days = DateTime(0).fromddMMyyyy(_postedDate).calculateDays();
-
+    _chipsList.add("Show Full »");
+    _days = DateTime.fromMillisecondsSinceEpoch(widget.feedMap['lastProfileUpdated']).calculateDays();
     super.initState();
   }
 
@@ -76,7 +62,7 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
           image: DecorationImage(image: _mainImage, fit: BoxFit.cover),
         ),
         child: Container(
-          padding: EdgeInsets.all(xSize/4),
+          padding: EdgeInsets.all(xSize / 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(xSize2),
             gradient: LinearGradient(
@@ -105,11 +91,11 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _name.capitalizeFirstOfEach,
+                        widget.feedMap['name'].toString().capitalizeFirstOfEach,
                         style: xTheme.textTheme.labelLarge!.apply(color: xOnPrimary),
                       ),
                       Text(
-                        "@$_username",
+                        "@${widget.feedMap['username']}",
                         style: xTheme.textTheme.labelSmall!.apply(color: xOnPrimary),
                       ),
                     ],
@@ -142,18 +128,15 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                   // chips
                   Expanded(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                          maxHeight: xSize*3
-                      ),
+                      constraints: const BoxConstraints(maxHeight: xSize * 3),
                       child: Wrap(
                         runSpacing: xSize / 4,
                         spacing: xSize / 4,
                         clipBehavior: Clip.hardEdge,
                         children: _chipsList.map((chip) {
                           return GestureDetector(
-                            onTap: (){
-                              // todo pass the map of user
-                              context.push(ProfileDisplay(feedMap: {},));
+                            onTap: () {
+                              context.push(ProfileDisplay(feedMap: widget.feedMap));
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -179,10 +162,30 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                         height: xSize * 2.5,
                         iconR: _theyLiked ? _iconImage : null,
                         iconL: _youLiked ? _iconImage : null,
-                        onTap: () {
+                        onTap: () async {
                           setState(() {
                             _youLiked = !_youLiked;
                           });
+                          //  update the variables and isar here
+                          if (_youLiked) {
+                            xProfile!.requestedUsersForMatch.addAll({widget.feedMap['uidPN']: true});
+                            await xProfileIsarManager.setProfile(xProfile!);
+                          } else {
+                            xProfile!.requestedUsersForMatch.remove(widget.feedMap['uidPN']);
+                            await xProfileIsarManager.setProfile(xProfile!);
+                          }
+                          // update the sub collection of matingRequests in firestore
+                          await FirebaseCloudFirestore().updateMatingReq(
+                            req: _youLiked,
+                            myUidPN: xProfile!.uidPN,
+                            frndsUidPN: widget.feedMap['uidPN'],
+                            myName: xProfile!.name!,
+                            frndsName: widget.feedMap['name'],
+                            myIcon: xProfile!.iconUrl!,
+                            frndsIcon: widget.feedMap['profile']['assets']['icon_0']['url'],
+                            myUsername: xProfile!.username,
+                            frndsUsername: widget.feedMap['userName'],
+                          );
                         },
                       ),
                     ),
@@ -190,10 +193,11 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                 ],
               ),
               // posted date
-              if(_days!=null)Text(
-                "posted ${(_days==0)?"today":("$_days ${_days==1?"day":"days"} ago")}",
-                style: xTheme.textTheme.labelSmall!.apply(color: xOnPrimary.withOpacity(0.8), fontSizeDelta: 1),
-              ),
+              if (_days != null)
+                Text(
+                  "updated ${(_days == 0) ? "today" : ("$_days ${_days == 1 ? "day" : "days"} ago")}",
+                  style: xTheme.textTheme.labelSmall!.apply(color: xOnPrimary.withOpacity(0.8), fontSizeDelta: 1),
+                ),
             ],
           ),
         ),

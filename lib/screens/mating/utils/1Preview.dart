@@ -29,7 +29,7 @@ class _Preview1FinalState extends State<Preview1Final> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              FindingPartnerWidget(postDetails: {},),
+              FindingPartnerWidget(feedMap: {},),
               const SizedBox().vertical(),
               SizedBox(
                 width: xWidth,

@@ -30,7 +30,7 @@ import 'utils/functions.dart';
 ///   username: <String>,
 ///   name: <String>,
 ///   type: <String>,
-///   colour: <String>,
+///   color: <String>,
 ///   breed: <String>,
 ///   birthDate: <String>, // in dd/mm/yyyy format
 ///   gender: <String>,
@@ -129,11 +129,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (temp == false) throw ("error while updating profile");
       // save in the local
       xProfile!.name = currProfileMap['name'];
-      xProfile!.icon = base64Encode(await File(assetsMapWithImageProvider['icon_0']['path']).readAsBytes());
+      xProfile!.iconBase64 = base64Encode(await File(assetsMapWithImageProvider['icon_0']['path']).readAsBytes());
+      xProfile!.iconUrl = currProfileMap['assets']['icon_0']['url'];
       xProfile!.amount = currProfileMap['amount'];
       xProfile!.type = currProfileMap['type'] ;
       xProfile!.breed = currProfileMap['breed'] ;
-      xProfile!.colour = currProfileMap['colour'];
+      xProfile!.color = currProfileMap['color'];
       xProfile!.gender = currProfileMap['gender'];
       xProfile!.height = currProfileMap['height'];
       xProfile!.weight = currProfileMap['weight'];
@@ -272,7 +273,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             currProfileMap['type'] = value;
                             // resetting the values
                             currProfileMap['breed'] = null;
-                            currProfileMap['colour'] = null;
+                            currProfileMap['color'] = null;
                             currProfileMap['gender'] = null;
                             setState(() {});
                             xPrint("selected type - $value");
@@ -323,9 +324,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox().vertical(),
                         // color
                         XDropDownField(
-                          hintText: "Colour",
+                          hintText: "color",
                           textInputAction: TextInputAction.next,
-                          initialValue: currProfileMap['colour'],
+                          initialValue: currProfileMap['color'],
                           keyboardType: TextInputType.text,
                           list: (currProfileMap['type'] == null || currProfileMap['breed'] == null)
                               ? []
@@ -337,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             setState(() {});
                           },
                           onSelected: (String? value) {
-                            currProfileMap['colour'] = value;
+                            currProfileMap['color'] = value;
                             setState(() {});
                             xPrint("selected breed - $value");
                           },
@@ -529,7 +530,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   onChangedFn: (String? value) {
                                     setState(() {
-                                      currProfileMap['amount'] = (value != null) ? double.parse(value) : null;
+                                      currProfileMap['amount'] = (value != null) ? double.parse(value) : 0;
                                       _error = null;
                                     });
                                     xPrint("amount - $currProfileMap['amount']");
@@ -545,7 +546,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   XRoundedButton(
                                     onPressed: () {
                                       _chargeAmount = false;
-                                      currProfileMap['amount'] = null;
+                                      currProfileMap['amount'] = 0;
                                       setState(() {});
                                     },
                                     text: "No",
@@ -622,7 +623,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       currProfileMap['name'] == null ||
       currProfileMap['type'] == null ||
       currProfileMap['breed'] == null ||
-      currProfileMap['colour'] == null ||
+      currProfileMap['color'] == null ||
       currProfileMap['gender'] == null ||
       currProfileMap['birthDate'] == null ||
       currProfileMap['height'] == null ||

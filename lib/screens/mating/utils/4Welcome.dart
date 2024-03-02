@@ -128,7 +128,7 @@ Widget welcome4Dummy() {
           ],
         ),
       ),
-      Positioned.fill(child: xGlassBgEffect(child: lockWithHeading("4) We can\'t wait to welcome you!", "Please pay the advance to unlock this step, as it helps in avoiding scam profiles and enables us to provide you with best service."))),
+      Positioned.fill(child: xGlassBgEffect(child: lockWithHeading("4) We can't wait to welcome you!", "Please pay the advance to unlock this step, as it helps in avoiding scam profiles and enables us to provide you with best service."))),
     ],
   );
 }

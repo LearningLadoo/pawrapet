@@ -10,8 +10,12 @@ import 'package:pawrapet/utils/functions/common.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 import 'package:pawrapet/utils/widgets/heart.dart';
 
+import '../../firebase/firestore.dart';
+
 class ProfileDisplay extends StatefulWidget {
-  Map<String, dynamic> feedMap; // refer [feed.dart]
+  Map<String, dynamic> feedMap;
+
+  /// refer [feed.dart]
   Map<String, dynamic>? assetsMapWithImageProvider; // with image provider, this is passed when seeing a preview
   ProfileDisplay({Key? key, required this.feedMap, this.assetsMapWithImageProvider}) : super(key: key);
 
@@ -42,11 +46,9 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
     else {
       _iconThey = _iconImage;
       _iconYou = xMyIcon().image;
-      _theyLiked = widget.feedMap['users'].contains(xProfile!.uidPN);
-      _youLiked = ((xProfile!.requestedUsersForMatch) ?? "").contains(widget.feedMap['uidPN'] ?? "0");
+      _theyLiked = widget.feedMap['requestedUsersForMatch'][xProfile!.uidPN] == true;
+      _youLiked = xProfile!.requestedUsersForMatch[widget.feedMap['uidPN']] == true;
     }
-    Map<String, dynamic> temp = {};
-    // temp.containsKey(key)
     super.initState();
   }
 
@@ -69,7 +71,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox().vertical(),
-                          // icon, colour, breed, gender, age, amount
+                          // icon, color, breed, gender, age, amount
                           Row(
                             children: [
                               CircleAvatar(
@@ -83,7 +85,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${widget.feedMap['profile']['colour'].capitalizeFirstOfEach}, ${widget.feedMap['profile']['breed']}",
+                                      "${widget.feedMap['profile']['color'].capitalizeFirstOfEach}, ${widget.feedMap['profile']['breed']}",
                                       style: xTheme.textTheme.bodyMedium!.apply(fontSizeDelta: 1, fontWeightDelta: 1),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -161,26 +163,28 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                       setState(() {
                                         _youLiked = !_youLiked;
                                       });
+                                      // for the preview
                                       if (widget.assetsMapWithImageProvider == null) return;
-                                      // todo update the cloud, create a cloud function to trigger the other user
                                       //  update the variables and isar here
-                                      // todo uncomment all this
-                                      // if (_youLiked) {
-                                      //   xProfile!.requestedUsersForMatch!.add(widget.feedMap['uidPN']);
-                                      //   await xProfileIsarManager.setProfile(xProfile!);
-                                      // } else {
-                                      //   xProfile!.requestedUsersForMatch!.remove(widget.feedMap['uidPN']);
-                                      //   await xProfileIsarManager.setProfile(xProfile!);
-                                      // }
-                                      // todo update the sub collection of matingRequests in firestore
-                                      // todo <this will be trigger with on create in mating requests>
-                                      // todo send notifications to both that this user liked the other user
-                                      // todo update the requestedUsersForMatch in the user details
-                                      // todo check if the other user also liked then
-                                      // todo    send the notification that the match is created
-                                      // todo    create session id in the collection mating if not present
-                                      // todo    mating session sub collection
-
+                                      if (_youLiked) {
+                                        xProfile!.requestedUsersForMatch.addAll({widget.feedMap['uidPN']: true});
+                                        await xProfileIsarManager.setProfile(xProfile!);
+                                      } else {
+                                        xProfile!.requestedUsersForMatch.remove(widget.feedMap['uidPN']);
+                                        await xProfileIsarManager.setProfile(xProfile!);
+                                      }
+                                      // update the sub collection of matingRequests in firestore
+                                      await FirebaseCloudFirestore().updateMatingReq(
+                                        req: _youLiked,
+                                        myUidPN: xProfile!.uidPN,
+                                        frndsUidPN: widget.feedMap['uidPN'],
+                                        myName: xProfile!.name!,
+                                        frndsName: widget.feedMap['name'],
+                                        myIcon: xProfile!.iconUrl!,
+                                        frndsIcon: widget.feedMap['profile']['assets']['icon_0']['url'],
+                                        myUsername: xProfile!.username,
+                                        frndsUsername: widget.feedMap['userName'],
+                                      );
                                     },
                                   ),
                                 ),

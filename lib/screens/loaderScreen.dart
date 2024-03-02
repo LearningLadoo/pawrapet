@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:pawrapet/utils/constants.dart';
 
+import '../utils/widgets/common.dart';
+
 class LoaderScreen extends StatelessWidget {
   const LoaderScreen({Key? key}) : super(key: key);
 

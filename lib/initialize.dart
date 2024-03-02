@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +41,7 @@ class Initialize extends StatelessWidget {
         // success handling
         else if (snapshot.connectionState == ConnectionState.done || snapshot.hasData == true) {
           AuthState authState = Provider.of<AuthProvider>(context, listen: false).authState;
-          xPrint("auth = ${Provider.of<AuthProvider>(context, listen: false).firebaseUser} $authState ${FirebaseAuth.instance.currentUser}", header: 'intialize');
+          xPrint("auth = ${Provider.of<AuthProvider>(context, listen: false).firebaseUser} $authState}", header: 'intialize');
           if (authState == AuthState.loggedOut) {
             return const Welcome();
           } else {
@@ -80,17 +79,25 @@ Future<int> initialProfileFetch() async {
     if(xSharedPrefs.activeProfileNumber==null) await xSharedPrefs.initialize();
     int? pn = xSharedPrefs.activeProfileNumber;
     String? uidPN = xSharedPrefs.activeProfileUidPN!;// as at this point, when its logged in, the UID cannot be null
+    xPrint("pn n uidPN $pn $uidPN",header: "initialProfileFetch" );
+
     // now check the isar if it has data for this pn
     xProfile = await xProfileIsarManager.getProfileFromProfileNumber(pn!);
     // if there is data in isar then return 0
+    xPrint("profile in isar = ${xProfile!=null}",header: "initialProfileFetch" );
+
     if (xProfile != null) return 0;
     // else fetch the data of that profile
     Map? map = await FirebaseCloudFirestore().getProfileDetails(uidPN);
     // if the name is null then return the profile no to set it up
+    xPrint("checking the fetched map or map name ${map} ${map??{}['name']}",header: "initialProfileFetch" );
+
     if (map == null || map['name'] == null) return pn;
     // else add it in isar and return 0
     xProfile = await xProfileIsarManager.getProfileFromMap(map: map!, profileNumber: pn, uidPN:uidPN!);
     await xProfileIsarManager.setProfile(xProfile!);
+    xPrint("success",header: "initialProfileFetch" );
+
     return 0;
   } catch (e) {
     xPrint(e.toString(),header: "initialProfileFetch" );

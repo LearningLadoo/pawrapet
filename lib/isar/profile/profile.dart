@@ -15,6 +15,8 @@
  }
  */
 
+import 'dart:convert';
+
 import 'package:isar/isar.dart';
 
 part 'profile.g.dart';
@@ -22,15 +24,16 @@ part 'profile.g.dart';
 @collection
 class Profile {
   Id profileNumber;
-  String? requestedUsersForMatch; // json string
+  String? _requestedUsersForMatch; // json string
   late String uidPN;
   late String username;
   String? name;
-  String? icon;
+  String? iconBase64; // base64 string
+  String? iconUrl; // url
   String? type;
   String? breed;
   String? gender;
-  String? colour;
+  String? color;
   double? height;
   double? weight;
   double? amount;
@@ -40,15 +43,20 @@ class Profile {
       {this.type,
       this.breed,
       this.gender,
-      this.colour,
+      this.color,
       this.height,
       this.weight,
       required this.profileNumber,
-      this.requestedUsersForMatch,
       required this.uidPN,
       required this.username,
       this.name,
-      this.icon,
+      this.iconBase64,
       this.amount,
-      this.isFindingMate = false});
+      this.isFindingMate = false,
+      Map<String, dynamic>? requestedUsersForMatch}) {
+    _requestedUsersForMatch = json.encode(requestedUsersForMatch ?? {});
+  }
+
+  @ignore
+  Map<String, dynamic> get requestedUsersForMatch => json.decode(_requestedUsersForMatch.toString());
 }

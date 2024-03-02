@@ -212,7 +212,7 @@ class SharedPrefs {
   /// in thousands, initial to final
   Future<bool> setAmountInMatingFilters(List<double> amount) async{
     Map temp = _matingFilterMap??{};
-    temp['amount'] = amount;
+    temp['amountRange'] = amount;
     _matingFilterMap = temp;
     return await _prefsInstance.setString(_matingFilter, json.encode(temp));
   }

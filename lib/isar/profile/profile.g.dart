@@ -27,9 +27,9 @@ const ProfileSchema = CollectionSchema(
       name: r'breed',
       type: IsarType.string,
     ),
-    r'colour': PropertySchema(
+    r'color': PropertySchema(
       id: 2,
-      name: r'colour',
+      name: r'color',
       type: IsarType.string,
     ),
     r'gender': PropertySchema(
@@ -42,24 +42,24 @@ const ProfileSchema = CollectionSchema(
       name: r'height',
       type: IsarType.double,
     ),
-    r'icon': PropertySchema(
+    r'iconBase64': PropertySchema(
       id: 5,
-      name: r'icon',
+      name: r'iconBase64',
+      type: IsarType.string,
+    ),
+    r'iconUrl': PropertySchema(
+      id: 6,
+      name: r'iconUrl',
       type: IsarType.string,
     ),
     r'isFindingMate': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'isFindingMate',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
-      id: 7,
-      name: r'name',
-      type: IsarType.string,
-    ),
-    r'requestedUsersForMatch': PropertySchema(
       id: 8,
-      name: r'requestedUsersForMatch',
+      name: r'name',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
@@ -110,7 +110,7 @@ int _profileEstimateSize(
     }
   }
   {
-    final value = object.colour;
+    final value = object.color;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -122,19 +122,19 @@ int _profileEstimateSize(
     }
   }
   {
-    final value = object.icon;
+    final value = object.iconBase64;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.iconUrl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
   {
     final value = object.name;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.requestedUsersForMatch;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -158,13 +158,13 @@ void _profileSerialize(
 ) {
   writer.writeDouble(offsets[0], object.amount);
   writer.writeString(offsets[1], object.breed);
-  writer.writeString(offsets[2], object.colour);
+  writer.writeString(offsets[2], object.color);
   writer.writeString(offsets[3], object.gender);
   writer.writeDouble(offsets[4], object.height);
-  writer.writeString(offsets[5], object.icon);
-  writer.writeBool(offsets[6], object.isFindingMate);
-  writer.writeString(offsets[7], object.name);
-  writer.writeString(offsets[8], object.requestedUsersForMatch);
+  writer.writeString(offsets[5], object.iconBase64);
+  writer.writeString(offsets[6], object.iconUrl);
+  writer.writeBool(offsets[7], object.isFindingMate);
+  writer.writeString(offsets[8], object.name);
   writer.writeString(offsets[9], object.type);
   writer.writeString(offsets[10], object.uidPN);
   writer.writeString(offsets[11], object.username);
@@ -180,19 +180,19 @@ Profile _profileDeserialize(
   final object = Profile(
     amount: reader.readDoubleOrNull(offsets[0]),
     breed: reader.readStringOrNull(offsets[1]),
-    colour: reader.readStringOrNull(offsets[2]),
+    color: reader.readStringOrNull(offsets[2]),
     gender: reader.readStringOrNull(offsets[3]),
     height: reader.readDoubleOrNull(offsets[4]),
-    icon: reader.readStringOrNull(offsets[5]),
-    isFindingMate: reader.readBoolOrNull(offsets[6]) ?? false,
-    name: reader.readStringOrNull(offsets[7]),
+    iconBase64: reader.readStringOrNull(offsets[5]),
+    isFindingMate: reader.readBoolOrNull(offsets[7]) ?? false,
+    name: reader.readStringOrNull(offsets[8]),
     profileNumber: id,
-    requestedUsersForMatch: reader.readStringOrNull(offsets[8]),
     type: reader.readStringOrNull(offsets[9]),
     uidPN: reader.readString(offsets[10]),
     username: reader.readString(offsets[11]),
     weight: reader.readDoubleOrNull(offsets[12]),
   );
+  object.iconUrl = reader.readStringOrNull(offsets[6]);
   return object;
 }
 
@@ -216,9 +216,9 @@ P _profileDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 7:
       return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
@@ -553,36 +553,36 @@ extension ProfileQueryFilter
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourIsNull() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'colour',
+        property: r'color',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourIsNotNull() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'colour',
+        property: r'color',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourEqualTo(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourGreaterThan(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -590,14 +590,14 @@ extension ProfileQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourLessThan(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -605,14 +605,14 @@ extension ProfileQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourBetween(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -621,7 +621,7 @@ extension ProfileQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'colour',
+        property: r'color',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -631,69 +631,69 @@ extension ProfileQueryFilter
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourStartsWith(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourEndsWith(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourContains(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'colour',
+        property: r'color',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourMatches(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'colour',
+        property: r'color',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourIsEmpty() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'colour',
+        property: r'color',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> colourIsNotEmpty() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> colorIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'colour',
+        property: r'color',
         value: '',
       ));
     });
@@ -923,36 +923,36 @@ extension ProfileQueryFilter
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconIsNull() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64IsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'icon',
+        property: r'iconBase64',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconIsNotNull() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64IsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'icon',
+        property: r'iconBase64',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconEqualTo(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64EqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconGreaterThan(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64GreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -960,14 +960,14 @@ extension ProfileQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconLessThan(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64LessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -975,14 +975,14 @@ extension ProfileQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBetween(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64Between(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -991,7 +991,7 @@ extension ProfileQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'icon',
+        property: r'iconBase64',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1001,69 +1001,215 @@ extension ProfileQueryFilter
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconStartsWith(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64StartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconEndsWith(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64EndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconContains(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64Contains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'icon',
+        property: r'iconBase64',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconMatches(
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64Matches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'icon',
+        property: r'iconBase64',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconIsEmpty() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64IsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'icon',
+        property: r'iconBase64',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconIsNotEmpty() {
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconBase64IsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'icon',
+        property: r'iconBase64',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'iconUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'iconUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'iconUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'iconUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'iconUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'iconUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> iconUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'iconUrl',
         value: '',
       ));
     });
@@ -1275,162 +1421,6 @@ extension ProfileQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'requestedUsersForMatch',
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'requestedUsersForMatch',
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'requestedUsersForMatch',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchContains(String value,
-          {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'requestedUsersForMatch',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchMatches(String pattern,
-          {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'requestedUsersForMatch',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'requestedUsersForMatch',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterFilterCondition>
-      requestedUsersForMatchIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'requestedUsersForMatch',
-        value: '',
       ));
     });
   }
@@ -1951,15 +1941,15 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortByColour() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortBycolor() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colour', Sort.asc);
+      return query.addSortBy(r'color', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortByColourDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortBycolorDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colour', Sort.desc);
+      return query.addSortBy(r'color', Sort.desc);
     });
   }
 
@@ -1987,15 +1977,27 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIcon() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIconBase64() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'icon', Sort.asc);
+      return query.addSortBy(r'iconBase64', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIconDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIconBase64Desc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'icon', Sort.desc);
+      return query.addSortBy(r'iconBase64', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIconUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByIconUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconUrl', Sort.desc);
     });
   }
 
@@ -2020,19 +2022,6 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
   QueryBuilder<Profile, Profile, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortByRequestedUsersForMatch() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'requestedUsersForMatch', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterSortBy>
-      sortByRequestedUsersForMatchDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'requestedUsersForMatch', Sort.desc);
     });
   }
 
@@ -2111,15 +2100,15 @@ extension ProfileQuerySortThenBy
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenByColour() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenBycolor() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colour', Sort.asc);
+      return query.addSortBy(r'color', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenByColourDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenBycolorDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colour', Sort.desc);
+      return query.addSortBy(r'color', Sort.desc);
     });
   }
 
@@ -2147,15 +2136,27 @@ extension ProfileQuerySortThenBy
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIcon() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIconBase64() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'icon', Sort.asc);
+      return query.addSortBy(r'iconBase64', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIconDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIconBase64Desc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'icon', Sort.desc);
+      return query.addSortBy(r'iconBase64', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIconUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByIconUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconUrl', Sort.desc);
     });
   }
 
@@ -2192,19 +2193,6 @@ extension ProfileQuerySortThenBy
   QueryBuilder<Profile, Profile, QAfterSortBy> thenByProfileNumberDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profileNumber', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenByRequestedUsersForMatch() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'requestedUsersForMatch', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QAfterSortBy>
-      thenByRequestedUsersForMatchDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'requestedUsersForMatch', Sort.desc);
     });
   }
 
@@ -2272,10 +2260,10 @@ extension ProfileQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Profile, Profile, QDistinct> distinctByColour(
+  QueryBuilder<Profile, Profile, QDistinct> distinctBycolor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'colour', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'color', caseSensitive: caseSensitive);
     });
   }
 
@@ -2292,10 +2280,17 @@ extension ProfileQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Profile, Profile, QDistinct> distinctByIcon(
+  QueryBuilder<Profile, Profile, QDistinct> distinctByIconBase64(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'icon', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'iconBase64', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QDistinct> distinctByIconUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'iconUrl', caseSensitive: caseSensitive);
     });
   }
 
@@ -2309,14 +2304,6 @@ extension ProfileQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Profile, Profile, QDistinct> distinctByRequestedUsersForMatch(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'requestedUsersForMatch',
-          caseSensitive: caseSensitive);
     });
   }
 
@@ -2368,9 +2355,9 @@ extension ProfileQueryProperty
     });
   }
 
-  QueryBuilder<Profile, String?, QQueryOperations> colourProperty() {
+  QueryBuilder<Profile, String?, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'colour');
+      return query.addPropertyName(r'color');
     });
   }
 
@@ -2386,9 +2373,15 @@ extension ProfileQueryProperty
     });
   }
 
-  QueryBuilder<Profile, String?, QQueryOperations> iconProperty() {
+  QueryBuilder<Profile, String?, QQueryOperations> iconBase64Property() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'icon');
+      return query.addPropertyName(r'iconBase64');
+    });
+  }
+
+  QueryBuilder<Profile, String?, QQueryOperations> iconUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'iconUrl');
     });
   }
 
@@ -2401,13 +2394,6 @@ extension ProfileQueryProperty
   QueryBuilder<Profile, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
-    });
-  }
-
-  QueryBuilder<Profile, String?, QQueryOperations>
-      requestedUsersForMatchProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'requestedUsersForMatch');
     });
   }
 

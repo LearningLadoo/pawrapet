@@ -10,8 +10,6 @@ import 'package:pawrapet/providers/firebaseMessagingProvider.dart';
 import 'package:pawrapet/providers/otpProvider.dart';
 import 'package:pawrapet/utils/constants.dart';
 import 'package:provider/provider.dart';
-
-import 'providers/feedProvider.dart';
 import 'utils/functions/common.dart';
 // TODO: Add stream controller
 // TODO: Define the background message handler
@@ -29,7 +27,6 @@ void main() async{
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => OtpProvider()),
         ChangeNotifierProvider(create: (_) => MessagingProvider()),
-        ChangeNotifierProvider(create: (_) => FeedProvider()),
       ],
       child: RestartWidget(child: const MainApp()),
     ),

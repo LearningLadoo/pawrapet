@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import '../constants.dart';
 
 void xPrint(String? str, {String? header}){
@@ -16,7 +14,7 @@ bool xContainsDate(List<DateTime> list, DateTime date){
 }
 Image xMyIcon(){
   try{
-    return Image.memory(base64Decode(xProfile!.icon!));
+    return Image.memory(base64Decode(xProfile!.iconBase64!));
   }catch(e){
     return xAppLogo;
   }

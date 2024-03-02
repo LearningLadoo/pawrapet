@@ -6,6 +6,7 @@ import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/extensions/string.dart';
 import 'package:pawrapet/utils/functions/common.dart';
 import '../constants.dart';
+import 'displayText.dart';
 
 class XTextField extends StatefulWidget {
   final TextStyle? textStyle;
@@ -641,13 +642,15 @@ class _XOtpTextFieldState extends State<XOtpTextField> {
   }
 }
 
+// it cannot be made final because the list keeps on changing in some cases
 class XWrapChipsWithHeadingAndAddFromList extends StatefulWidget {
   String heading;
   List<String> list;
+  /// this list will be updated in the parent widget as well
   List<String> initialList;
   Function(List<String>) onChanged;
 
-  XWrapChipsWithHeadingAndAddFromList({Key? key, required this.heading, required this.list, required this.initialList, required this.onChanged}) : super(key: key);
+  XWrapChipsWithHeadingAndAddFromList({super.key, required this.heading, required this.list, required this.initialList, required this.onChanged});
 
   @override
   State<XWrapChipsWithHeadingAndAddFromList> createState() => _XWrapChipsWithHeadingAndAddFromListState();
@@ -667,20 +670,21 @@ class _XWrapChipsWithHeadingAndAddFromListState extends State<XWrapChipsWithHead
 
   @override
   void didUpdateWidget(covariant XWrapChipsWithHeadingAndAddFromList oldWidget) {
-    if(oldWidget.list!=widget.list){
+    if (oldWidget.list != widget.list) {
       selectedList = [...widget.initialList];
-      for (String i in [...selectedList]) {
-          if (widget.list.contains(i)) {
-            widget.list.remove(i);
-          } else {
-            selectedList.remove(i);
-          }
+      for (String i in selectedList) {
+        if (widget.list.contains(i)) {
+          widget.list.remove(i);
+        } else {
+          selectedList.remove(i);
         }
+      }
     }
     super.didUpdateWidget(oldWidget);
   }
   @override
   Widget build(BuildContext context) {
+    xPrint("selectedList -${widget.heading} $selectedList", header: "chips");
     return Wrap(
       runSpacing: xSize / 4,
       spacing: xSize / 4,
@@ -698,48 +702,63 @@ class _XWrapChipsWithHeadingAndAddFromListState extends State<XWrapChipsWithHead
           );
         }
         if (value == "add") {
-          if (widget.list.isEmpty) return Center();
+          if (widget.list.isEmpty && selectedList.isEmpty) {
+            return Container(
+              decoration: BoxDecoration(
+                color: xOnError.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(xSize2),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: xSize1, vertical: xSize1 / 3),
+              child: Text(
+                "not found",
+                style: xTheme.textTheme.labelLarge!.apply(color: xPrimary.withOpacity(0.9)),
+              ),
+            );
+          }
+          if (widget.list.isEmpty) {
+            return const Text("");
+          }
           return XDropDownChip(
             list: widget.list,
             onSelected: (v) {
               selectedList.add(v);
               widget.list.remove(v);
-              widget.onChanged(selectedList);
               setState(() {});
+              widget.onChanged(selectedList);
             },
             hintText: "Add",
           );
         }
-        return Container(
-          decoration: BoxDecoration(
-            color: xPrimary.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(xSize2),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: xSize1, vertical: xSize1 / 3).copyWith(right: xSize1 / 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: xWidth * 0.35),
-                child: Text(
-                  value.trim(),
-                  style: xTheme.textTheme.labelLarge!.apply(color: xOnPrimary.withOpacity(0.9)),
-                  overflow: TextOverflow.ellipsis,
+        return InkWell(
+          onTap: (){
+            selectedList.remove(value);
+            widget.list.add(value);
+            widget.onChanged(selectedList);
+            setState(() {});
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: xPrimary.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(xSize2),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: xSize1, vertical: xSize1 / 3).copyWith(right: xSize1 / 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: xWidth * 0.35),
+                  child: Text(
+                    value.trim(),
+                    style: xTheme.textTheme.labelLarge!.apply(color: xOnPrimary.withOpacity(0.9)),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  selectedList.remove(value);
-                  widget.list.add(value);
-                  widget.onChanged(selectedList);
-                  setState(() {});
-                },
-                child: Icon(
+                Icon(
                   Icons.close_rounded,
                   color: xOnPrimary.withOpacity(0.7),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         );
       }).toList(),

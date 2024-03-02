@@ -52,48 +52,13 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
 }
 
-// todo getting the set state is a bad practice
-Widget getLocationPermissionWidget(VoidCallback setState) {
-  return Container(
-    padding: const EdgeInsets.all(xSize / 2),
-    margin: const EdgeInsets.all(xSize / 2),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(xSize / 3),
-      color: xSecondary,
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "Approximate Location",
-          style: xTheme.textTheme.headlineMedium,
-        ),
-        const SizedBox().vertical(size: xSize / 2),
-        Text(
-          "To access mating feature we require your approximate location inorder to check our availability of our centers in your area.\nOur team ensures a guided mating process at our centers.",
-          style: xTheme.textTheme.bodyMedium,
-        ),
-        const SizedBox().vertical(size: xSize / 2),
-        XRoundedButton(
-          onPressed: () async {
-            await fetchAndAssignPosition(setState);
-          },
-          expand: true,
-          text: "Provide Location",
-          textStyle: xTheme.textTheme.bodyMedium!.apply(fontWeightDelta: 0, color: xSecondary),
-        ),
-      ],
-    ),
-  );
-}
-
-Future<void> fetchAndAssignPosition(VoidCallback setState) async {
+Future<void> fetchAndAssignPosition() async {
   try {
     Position position = await determinePosition();
-    // todo remove this, its for testing
     Map tempMap = position.toJson();
-    tempMap["latitude"] = 28.543271;
-    tempMap["longitude"] = 77.273530;
+    // these are fake coordinates of delhi for testing
+    // tempMap["latitude"] = 28.543271;
+    // tempMap["longitude"] = 77.273530;
     position = Position.fromMap(tempMap);
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Map positionMap = {
@@ -104,15 +69,14 @@ Future<void> fetchAndAssignPosition(VoidCallback setState) async {
       'state': placemarks[0].administrativeArea,
       'pincode': placemarks[0].postalCode
     };
-    xPrint("placemarks and position $placemarks ${position.isMocked} ${position.latitude} ${position.longitude}", header: 'getCurrPositionForMatingFeed');
+    xPrint("placemarks and position $placemarks ${position.isMocked} ${position.latitude} ${position.longitude}", header: 'fetchAndAssignPosition');
     await xSharedPrefs.setPositionInMatingFilters(positionMap);
-    setState();
   } catch (e) {
     if (e.toString().contains("permanently denied")) {
       // redirect to the settings
       openAppSettings();
     }
-    xPrint("$e", header: "getLocationPermissionWidget");
+    xPrint("$e", header: "fetchAndAssignPosition");
   }
 }
 

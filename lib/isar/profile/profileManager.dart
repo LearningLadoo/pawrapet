@@ -17,17 +17,17 @@ class ProfileIsarManager  {
         type: map['type'],
         breed: map['breed'],
         gender: map['gender'],
-        colour: map['colour'],
+        color: map['color'],
         height: map['height']?.toDouble(),
         weight: map['weight']?.toDouble(),
         profileNumber: profileNumber,
         uidPN: uidPN,
         username: map["username"],
         name: map["name"],
-        requestedUsersForMatch:json.encode(map['requestedUsersForMatch']),
+        requestedUsersForMatch:map['requestedUsersForMatch'],
         amount: map["amount"]?.toDouble(),
         isFindingMate: map["isFindingMate"],
-        icon: (map['assets']?['icon_0']?['url']!=null)?base64Encode(await getImageBytesFromUrl(map['assets']['icon_0']['url'])):null,
+        iconBase64: (map['assets']?['icon_0']?['url']!=null)?base64Encode(await getImageBytesFromUrl(map['assets']['icon_0']['url'])):null,
     );
   }
 }
