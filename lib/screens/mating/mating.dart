@@ -21,7 +21,7 @@ class Mating extends StatefulWidget {
 
 class _MatingState extends State<Mating> {
   late String name ;
-  late String userName;
+  late String username;
   // managing flows
   late int flowIndex;
   List<String> disabledFlowMessage = [
@@ -45,7 +45,7 @@ class _MatingState extends State<Mating> {
   @override
   void initState() {
     flowIndex = widget.flowStep;
-    userName = widget.username;
+    username = widget.username;
     // todo fetch the details of the user and build the following via future builder
     if(flowIndex ==-1){
       // todo fetch the current flow index

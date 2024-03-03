@@ -47,7 +47,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
       _iconThey = _iconImage;
       _iconYou = xMyIcon().image;
       _theyLiked = widget.feedMap['requestedUsersForMatch'][xProfile!.uidPN] == true;
-      _youLiked = xProfile!.requestedUsersForMatch[widget.feedMap['uidPN']] == true;
+      _youLiked = xProfile!.requestedUsersMapForMatch?[widget.feedMap['uidPN']] == true;
     }
     super.initState();
   }
@@ -167,10 +167,10 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                       if (widget.assetsMapWithImageProvider == null) return;
                                       //  update the variables and isar here
                                       if (_youLiked) {
-                                        xProfile!.requestedUsersForMatch.addAll({widget.feedMap['uidPN']: true});
+                                        xProfile!.requestedUsersMapForMatch?.addAll({widget.feedMap['uidPN']: true});
                                         await xProfileIsarManager.setProfile(xProfile!);
                                       } else {
-                                        xProfile!.requestedUsersForMatch.remove(widget.feedMap['uidPN']);
+                                        xProfile!.requestedUsersMapForMatch?.remove(widget.feedMap['uidPN']);
                                         await xProfileIsarManager.setProfile(xProfile!);
                                       }
                                       // update the sub collection of matingRequests in firestore
@@ -183,7 +183,7 @@ class _ProfileDisplayState extends State<ProfileDisplay> {
                                         myIcon: xProfile!.iconUrl!,
                                         frndsIcon: widget.feedMap['profile']['assets']['icon_0']['url'],
                                         myUsername: xProfile!.username,
-                                        frndsUsername: widget.feedMap['userName'],
+                                        frndsUsername: widget.feedMap['username'],
                                       );
                                     },
                                   ),

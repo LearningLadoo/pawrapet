@@ -84,7 +84,7 @@ Future<int> initialProfileFetch() async {
     // now check the isar if it has data for this pn
     xProfile = await xProfileIsarManager.getProfileFromProfileNumber(pn!);
     // if there is data in isar then return 0
-    xPrint("profile in isar = ${xProfile!=null}",header: "initialProfileFetch" );
+    xPrint("profile in isar = ${xProfile!=null} ${xProfile?.requestedUsersMapForMatch}",header: "initialProfileFetch" );
 
     if (xProfile != null) return 0;
     // else fetch the data of that profile

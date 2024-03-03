@@ -46,12 +46,12 @@ class FirebaseCouldMessaging {
     String? token = await _messaging.getToken();
     // get oldToken from SharedPrefs
     Map deviceInfoMap = xSharedPrefs.deviceInfoMap!;
-    String? oldToken = deviceInfoMap["notificationId"];
+    String? oldToken = deviceInfoMap["notificationID"];
     xPrint("tokens old $oldToken \n new $token", header: "FirebaseCloudMessaging/manageToken");
     xPrint("${deviceInfoMap}", header: "FirebaseCloudMessaging/manageToken");
     if (oldToken != token && token != null) {
       // update the shared prefs and update the firebase database
-      deviceInfoMap.addAll(Map<String, dynamic>.from({"notificationId": token}));
+      deviceInfoMap.addAll(Map<String, dynamic>.from({"notificationID": token}));
       await Future.wait([
         FirebaseCloudFirestore().updateNotificationId(xSharedPrefs.currentUserMap!["UID"], deviceInfoMap["deviceId"], token),
         xSharedPrefs.setDeviceInfo(jsonEncode(deviceInfoMap)),

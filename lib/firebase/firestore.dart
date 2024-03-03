@@ -31,7 +31,7 @@ class FirebaseCloudFirestore {
   Future<bool> updateNotificationId(String uid, String deviceId, String token) async {
     try {
       await collectionUID.doc(uid).collection("devices").doc(deviceId).update({
-        "notificationId": token,
+        "notificationID": token,
       });
       return true;
     } catch (e) {

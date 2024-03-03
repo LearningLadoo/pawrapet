@@ -62,23 +62,28 @@ const ProfileSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'type': PropertySchema(
+    r'requestedUsersForMatch': PropertySchema(
       id: 9,
+      name: r'requestedUsersForMatch',
+      type: IsarType.string,
+    ),
+    r'type': PropertySchema(
+      id: 10,
       name: r'type',
       type: IsarType.string,
     ),
     r'uidPN': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'uidPN',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'username',
       type: IsarType.string,
     ),
     r'weight': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'weight',
       type: IsarType.double,
     )
@@ -140,6 +145,12 @@ int _profileEstimateSize(
     }
   }
   {
+    final value = object.requestedUsersForMatch;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.type;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -165,10 +176,11 @@ void _profileSerialize(
   writer.writeString(offsets[6], object.iconUrl);
   writer.writeBool(offsets[7], object.isFindingMate);
   writer.writeString(offsets[8], object.name);
-  writer.writeString(offsets[9], object.type);
-  writer.writeString(offsets[10], object.uidPN);
-  writer.writeString(offsets[11], object.username);
-  writer.writeDouble(offsets[12], object.weight);
+  writer.writeString(offsets[9], object.requestedUsersForMatch);
+  writer.writeString(offsets[10], object.type);
+  writer.writeString(offsets[11], object.uidPN);
+  writer.writeString(offsets[12], object.username);
+  writer.writeDouble(offsets[13], object.weight);
 }
 
 Profile _profileDeserialize(
@@ -187,10 +199,11 @@ Profile _profileDeserialize(
     isFindingMate: reader.readBoolOrNull(offsets[7]) ?? false,
     name: reader.readStringOrNull(offsets[8]),
     profileNumber: id,
-    type: reader.readStringOrNull(offsets[9]),
-    uidPN: reader.readString(offsets[10]),
-    username: reader.readString(offsets[11]),
-    weight: reader.readDoubleOrNull(offsets[12]),
+    requestedUsersForMatch: reader.readStringOrNull(offsets[9]),
+    type: reader.readStringOrNull(offsets[10]),
+    uidPN: reader.readString(offsets[11]),
+    username: reader.readString(offsets[12]),
+    weight: reader.readDoubleOrNull(offsets[13]),
   );
   object.iconUrl = reader.readStringOrNull(offsets[6]);
   return object;
@@ -224,10 +237,12 @@ P _profileDeserializeProp<P>(
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
       return (reader.readString(offset)) as P;
     case 12:
+      return (reader.readString(offset)) as P;
+    case 13:
       return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1425,6 +1440,162 @@ extension ProfileQueryFilter
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'requestedUsersForMatch',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'requestedUsersForMatch',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'requestedUsersForMatch',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'requestedUsersForMatch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'requestedUsersForMatch',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'requestedUsersForMatch',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      requestedUsersForMatchIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'requestedUsersForMatch',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterFilterCondition> typeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1941,13 +2112,13 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortBycolor() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> sortBycolorDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByColorDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.desc);
     });
@@ -2022,6 +2193,19 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
   QueryBuilder<Profile, Profile, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByRequestedUsersForMatch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'requestedUsersForMatch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy>
+      sortByRequestedUsersForMatchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'requestedUsersForMatch', Sort.desc);
     });
   }
 
@@ -2100,13 +2284,13 @@ extension ProfileQuerySortThenBy
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenBycolor() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
     });
   }
 
-  QueryBuilder<Profile, Profile, QAfterSortBy> thenBycolorDesc() {
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByColorDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.desc);
     });
@@ -2196,6 +2380,19 @@ extension ProfileQuerySortThenBy
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByRequestedUsersForMatch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'requestedUsersForMatch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy>
+      thenByRequestedUsersForMatchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'requestedUsersForMatch', Sort.desc);
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterSortBy> thenByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -2260,7 +2457,7 @@ extension ProfileQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Profile, Profile, QDistinct> distinctBycolor(
+  QueryBuilder<Profile, Profile, QDistinct> distinctByColor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'color', caseSensitive: caseSensitive);
@@ -2304,6 +2501,14 @@ extension ProfileQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QDistinct> distinctByRequestedUsersForMatch(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'requestedUsersForMatch',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2394,6 +2599,13 @@ extension ProfileQueryProperty
   QueryBuilder<Profile, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Profile, String?, QQueryOperations>
+      requestedUsersForMatchProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'requestedUsersForMatch');
     });
   }
 

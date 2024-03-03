@@ -5,6 +5,7 @@ import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/extensions/string.dart';
 import '../../../../firebase/firestore.dart';
 import '../../../../utils/constants.dart';
+import '../../../../utils/functions/common.dart';
 import '../../../../utils/widgets/heart.dart';
 import '../../../profile/profileDisplay.dart';
 
@@ -31,7 +32,7 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
     _iconImage = Image.network(widget.feedMap['assets']['icon_0']['url']).image;
     _mainImage = Image.network(widget.feedMap['assets']['main_0']['url']).image;
     _theyLiked = widget.feedMap['requestedUsersForMatch']?[xProfile!.uidPN] == true;
-    _youLiked = xProfile!.requestedUsersForMatch[widget.feedMap['uidPN']] == true;
+    _youLiked = xProfile!.requestedUsersMapForMatch?[widget.feedMap['uidPN']] == true;
     // Todo: change this if you have make it social media
     _status = "finding partner";
     _age = DateTime(0).fromddMMyyyy(widget.feedMap['birthDate']).calculateYears();
@@ -161,19 +162,22 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                       child: XHeartWithImageButton(
                         height: xSize * 2.5,
                         iconR: _theyLiked ? _iconImage : null,
-                        iconL: _youLiked ? _iconImage : null,
+                        iconL: _youLiked ? xMyIcon().image : null,
                         onTap: () async {
                           setState(() {
                             _youLiked = !_youLiked;
                           });
                           //  update the variables and isar here
+                          Map<String, dynamic> tempMap = xProfile!.requestedUsersMapForMatch??{};
                           if (_youLiked) {
-                            xProfile!.requestedUsersForMatch.addAll({widget.feedMap['uidPN']: true});
-                            await xProfileIsarManager.setProfile(xProfile!);
+                            tempMap.addAll({widget.feedMap['uidPN']: true});
                           } else {
-                            xProfile!.requestedUsersForMatch.remove(widget.feedMap['uidPN']);
-                            await xProfileIsarManager.setProfile(xProfile!);
+                            tempMap.remove(widget.feedMap['uidPN']);
                           }
+                          xProfile!.updateRequestedUsersForMatch(tempMap);
+                          xPrint("the requested user for match are ${xProfile!.requestedUsersMapForMatch}", header: "FindingPartnerWidget");
+                          await xProfileIsarManager.setProfile(xProfile!);
+
                           // update the sub collection of matingRequests in firestore
                           await FirebaseCloudFirestore().updateMatingReq(
                             req: _youLiked,
@@ -182,9 +186,9 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                             myName: xProfile!.name!,
                             frndsName: widget.feedMap['name'],
                             myIcon: xProfile!.iconUrl!,
-                            frndsIcon: widget.feedMap['profile']['assets']['icon_0']['url'],
+                            frndsIcon: widget.feedMap['assets']['icon_0']['url'],
                             myUsername: xProfile!.username,
-                            frndsUsername: widget.feedMap['userName'],
+                            frndsUsername: widget.feedMap['username'],
                           );
                         },
                       ),

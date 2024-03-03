@@ -69,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       fetchedProfileMap = (await FirebaseCloudFirestore().getProfileDetails(xSharedPrefs.activeProfileUidPN!)) ?? getDefaultProfileMap();
       currProfileMap = Map<String, dynamic>.from(fetchedProfileMap.deepClone());
       loaderText = null;
-      _chargeAmount = currProfileMap['amount']!=null;
+      _chargeAmount = currProfileMap['amount']!=0;
       initializeAssetsMap();
       return true;
     } catch (e) {
@@ -131,13 +131,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       xProfile!.name = currProfileMap['name'];
       xProfile!.iconBase64 = base64Encode(await File(assetsMapWithImageProvider['icon_0']['path']).readAsBytes());
       xProfile!.iconUrl = currProfileMap['assets']['icon_0']['url'];
-      xProfile!.amount = currProfileMap['amount'];
+      xProfile!.amount = currProfileMap['amount']*1.0;
       xProfile!.type = currProfileMap['type'] ;
       xProfile!.breed = currProfileMap['breed'] ;
       xProfile!.color = currProfileMap['color'];
       xProfile!.gender = currProfileMap['gender'];
-      xProfile!.height = currProfileMap['height'];
-      xProfile!.weight = currProfileMap['weight'];
+      xProfile!.height = currProfileMap['height']*1.0;
+      xProfile!.weight = currProfileMap['weight']*1.0;
       await xProfileIsarManager.setProfile(xProfile!);
       xPrint(currProfileMap.toString(), header: "saveProfileDetails");
       return true;

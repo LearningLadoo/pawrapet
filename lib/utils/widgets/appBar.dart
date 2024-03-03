@@ -134,11 +134,11 @@ class _FeedAppBarState extends State<FeedAppBar> {
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
             children: [
-              matingMatches(name: "Romie", userName: "rronie", iconImage: _myIcon, theyLike: true, youLike: true),
-              matingMatches(name: "champa", userName: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
-              matingMatches(name: "lola", userName: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
-              matingMatches(name: "Killo", userName: "rronie", iconImage: _myIcon, theyLike: false, youLike: true),
-              matingMatches(name: "Dante", userName: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
+              matingMatches(name: "Romie", username: "rronie", iconImage: _myIcon, theyLike: true, youLike: true),
+              matingMatches(name: "champa", username: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
+              matingMatches(name: "lola", username: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
+              matingMatches(name: "Killo", username: "rronie", iconImage: _myIcon, theyLike: false, youLike: true),
+              matingMatches(name: "Dante", username: "rronie", iconImage: _myIcon, theyLike: true, youLike: false),
             ],
           ),
         )
@@ -146,7 +146,7 @@ class _FeedAppBarState extends State<FeedAppBar> {
     );
   }
 
-  Widget matingMatches({required String name, required String userName, required ImageProvider iconImage, required bool theyLike, required bool youLike}) {
+  Widget matingMatches({required String name, required String username, required ImageProvider iconImage, required bool theyLike, required bool youLike}) {
     return Stack(
       children: [
         Padding(

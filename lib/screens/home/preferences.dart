@@ -105,7 +105,7 @@ class _PreferencesState extends State<Preferences> {
 
   void _setupInitialVariables() {
     Map? tempMap = xSharedPrefs.matingFilterMap;
-    xPrint("$tempMap", header: "Preferences/_setupInitialVariables");
+    xPrint("${xProfile!.type} $tempMap", header: "Preferences/_setupInitialVariables");
     if (tempMap == null) return;
     // radius and mating
     updateMatingPointsListWithRadius();
@@ -126,7 +126,7 @@ class _PreferencesState extends State<Preferences> {
     // } else {
     //   initialGendersList = List<String>.from(tempMap['genders']);
     // }
-    initialGendersList = List<String>.from(tempMap['genders']);
+    initialGendersList = List<String>.from(tempMap['genders']??[]);
 
     // charges
     List<double> chargesList = List<double>.from(tempMap['amountRange'] ?? []);

@@ -6,7 +6,7 @@ import 'package:pawrapet/utils/functions/idsChasKeys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///  currUser: {email: string, UID: string, username: string, verified: bool, profiles: {pn:{active: true}}, onboardEpoch: int} // jsonEncoded
-///  deviceInfo: {platform: string, deviceId: string, notificationId: string}
+///  deviceInfo: {platform: string, deviceId: string, notificationID: string}
 ///  todo add that centercodes to the profile data.
 ///  matingFilter: {position : {latitude: double, longitude: double, city: string, state: string, country,  pincode: int}, radius: <int in Km>, centerCodes: List of codes, amountRange: [initial, final], breeds: [a list], colors: [a list], genders: [a list] }}
 /// }

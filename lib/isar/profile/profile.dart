@@ -24,7 +24,7 @@ part 'profile.g.dart';
 @collection
 class Profile {
   Id profileNumber;
-  String? _requestedUsersForMatch; // json string
+  String? requestedUsersForMatch; // json string
   late String uidPN;
   late String username;
   String? name;
@@ -53,10 +53,12 @@ class Profile {
       this.iconBase64,
       this.amount,
       this.isFindingMate = false,
-      Map<String, dynamic>? requestedUsersForMatch}) {
-    _requestedUsersForMatch = json.encode(requestedUsersForMatch ?? {});
-  }
+      this.requestedUsersForMatch});
 
   @ignore
-  Map<String, dynamic> get requestedUsersForMatch => json.decode(_requestedUsersForMatch.toString());
+  Map<String, dynamic>? get requestedUsersMapForMatch => json.decode(requestedUsersForMatch.toString());
+
+  void updateRequestedUsersForMatch(Map<String, dynamic> map) {
+    requestedUsersForMatch = json.encode(map);
+  }
 }
