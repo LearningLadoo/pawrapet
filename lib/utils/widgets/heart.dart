@@ -5,10 +5,11 @@ import 'package:pawrapet/utils/constants.dart';
 
 class XHeartWithImageButton extends StatefulWidget {
   ImageProvider? iconL, iconR;
+  Color? bgColor;
   double height;
   double? gap;
   VoidCallback onTap;
-  XHeartWithImageButton({Key? key, this.iconL, this.iconR, required this.height, this.gap , required this.onTap}) : super(key: key);
+  XHeartWithImageButton({Key? key, this.iconL, this.iconR, required this.height, this.gap , required this.onTap, this.bgColor}) : super(key: key);
   @override
   State<XHeartWithImageButton> createState() => _XHeartWithImageButtonState();
 }
@@ -60,7 +61,7 @@ class _XHeartWithImageButtonState extends State<XHeartWithImageButton> with Tick
               child: AnimatedBuilder(
                 animation: _pulseAnimationController,
                   builder: (context,child){
-                  return XHeartWithImage(height: widget.height+widget.height/7*(_pulseAnimationController.value), gap: widget.gap, iconL: widget.iconL, iconR: widget.iconR,);
+                  return XHeartWithImage(height: widget.height+widget.height/7*(_pulseAnimationController.value), gap: widget.gap, iconL: widget.iconL, iconR: widget.iconR, bgColor: widget.bgColor);
                   }),
             )
           ),
@@ -74,7 +75,8 @@ class XHeartWithImage extends StatefulWidget {
   ImageProvider? iconL, iconR;
   double height;
   double? gap;
-  XHeartWithImage({Key? key, this.iconL, this.iconR, required this.height, this.gap }) : super(key: key);
+  Color? bgColor;
+  XHeartWithImage({Key? key, this.iconL, this.iconR, required this.height, this.gap , this.bgColor}) : super(key: key);
 
   @override
   State<XHeartWithImage> createState() => _XHeartWithImageState();
@@ -102,7 +104,7 @@ class _XHeartWithImageState extends State<XHeartWithImage> {
               height: widget.height,
               width: ratioWh*widget.height,
               child: CustomPaint(
-                painter: _RightClipperPainter(),
+                painter: _RightClipperPainter(bgColor: widget.bgColor),
               ),
             ),
           ),
@@ -125,7 +127,7 @@ class _XHeartWithImageState extends State<XHeartWithImage> {
               height: widget.height,
               width: ratioWh*widget.height,
               child: CustomPaint(
-                painter: _LeftClipperPainter(),
+                painter: _LeftClipperPainter(bgColor: widget.bgColor),
               ),
             ),
           ),
@@ -149,6 +151,8 @@ class _XHeartWithImageState extends State<XHeartWithImage> {
 
 
 class _LeftClipperPainter extends CustomPainter {
+  Color? bgColor;
+  _LeftClipperPainter({this.bgColor});
   @override
   void paint(Canvas canvas, Size size) {
     double x = size.height;
@@ -171,7 +175,7 @@ class _LeftClipperPainter extends CustomPainter {
     // canvas.drawPath(path_0,paint_0_stroke);
 
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
-    paint_0_fill.color = xOnPrimary.withOpacity(1);
+    paint_0_fill.color = bgColor??xOnPrimary;
     canvas.drawPath(path_0,paint_0_fill);
 
     // return canvas;
@@ -207,6 +211,8 @@ class _LeftCustomClipper extends CustomClipper<Path> {
 }
 
 class _RightClipperPainter extends CustomPainter {
+  Color? bgColor;
+  _RightClipperPainter({this.bgColor});
   @override
   void paint(Canvas canvas, Size size) {
     double x = size.height;
@@ -229,7 +235,7 @@ class _RightClipperPainter extends CustomPainter {
     // canvas.drawPath(path_0,paint_0_stroke);
 
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
-    paint_0_fill.color = xOnPrimary.withOpacity(1);
+    paint_0_fill.color = bgColor??xOnPrimary;
     canvas.drawPath(path_0,paint_0_fill);
 
     // return canvas;

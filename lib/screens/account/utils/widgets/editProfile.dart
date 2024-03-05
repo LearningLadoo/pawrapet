@@ -40,8 +40,8 @@ class EditProfile extends StatelessWidget {
                     style: xTheme.textTheme.headlineMedium!.apply(color: xPrimary.withOpacity(0.8)),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (xProfile!.amount != null) const SizedBox().vertical(size: xSize / 16),
-                  if (xProfile!.amount != null)
+                  if (xProfile!.amount != null && xProfile!.amount!=0) const SizedBox().vertical(size: xSize / 16),
+                  if (xProfile!.amount != null && xProfile!.amount!=0)
                     Text(
                       "₹${xProfile!.amount!.round()} per mating",
                       overflow: TextOverflow.ellipsis,

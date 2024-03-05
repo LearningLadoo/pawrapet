@@ -28,7 +28,7 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
 
   @override
   void initState() {
-    _amount = (widget.feedMap['amount'] ?? 0)*1.0;
+    _amount = (widget.feedMap['amount'] ?? 0) * 1.0;
     _iconImage = Image.network(widget.feedMap['assets']['icon_0']['url']).image;
     _mainImage = Image.network(widget.feedMap['assets']['main_0']['url']).image;
     _theyLiked = widget.feedMap['requestedUsersForMatch']?[xProfile!.uidPN] == true;
@@ -168,16 +168,10 @@ class _FindingPartnerWidgetState extends State<FindingPartnerWidget> {
                             _youLiked = !_youLiked;
                           });
                           //  update the variables and isar here
-                          Map<String, dynamic> tempMap = xProfile!.requestedUsersMapForMatch??{};
-                          if (_youLiked) {
-                            tempMap.addAll({widget.feedMap['uidPN']: true});
-                          } else {
-                            tempMap.remove(widget.feedMap['uidPN']);
-                          }
-                          xProfile!.updateRequestedUsersForMatch(tempMap);
-                          xPrint("the requested user for match are ${xProfile!.requestedUsersMapForMatch}", header: "FindingPartnerWidget");
-                          await xProfileIsarManager.setProfile(xProfile!);
-
+                          await xProfileIsarManager.updateRequestedUserForMatch(
+                            youLiked: _youLiked,
+                            uidPN: widget.feedMap['uidPN'],
+                          );
                           // update the sub collection of matingRequests in firestore
                           await FirebaseCloudFirestore().updateMatingReq(
                             req: _youLiked,

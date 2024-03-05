@@ -11,9 +11,9 @@ import 'package:pawrapet/utils/constants.dart';
 import 'package:pawrapet/utils/widgets/appBar.dart';
 
 class Mating extends StatefulWidget {
-  final String username;
+  final String uidPN;
   final int flowStep;// 0 to 6 and -1 to fetch the latest flow step
-  const Mating({Key? key, required this.flowStep, required this.username}) : super(key: key);
+  const Mating({Key? key, required this.flowStep, required this.uidPN}) : super(key: key);
 
   @override
   State<Mating> createState() => _MatingState();
@@ -21,7 +21,6 @@ class Mating extends StatefulWidget {
 
 class _MatingState extends State<Mating> {
   late String name ;
-  late String username;
   // managing flows
   late int flowIndex;
   List<String> disabledFlowMessage = [
@@ -45,7 +44,6 @@ class _MatingState extends State<Mating> {
   @override
   void initState() {
     flowIndex = widget.flowStep;
-    username = widget.username;
     // todo fetch the details of the user and build the following via future builder
     if(flowIndex ==-1){
       // todo fetch the current flow index

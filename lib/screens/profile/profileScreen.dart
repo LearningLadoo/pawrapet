@@ -525,7 +525,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 XTextField(
                                   hintText: "Amount (₹)",
                                   textInputAction: TextInputAction.next,
-                                  initialValue: currProfileMap['amount'] == null ? null : currProfileMap['amount'].toString(),
+                                  initialValue: currProfileMap['amount'] == null || currProfileMap['amount']==0? null : currProfileMap['amount'].toString(),
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   onChangedFn: (String? value) {
@@ -580,8 +580,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               setState(() {});
                               return;
                             }
-                            // Add the continue logic here
-                            context.push(ProfileDisplay(feedMap: {},));
+                            context.push(ProfileDisplay(feedMap: currProfileMap,assetsMapWithImageProvider: assetsMapWithImageProvider,));
                           },
                           text: "Preview",
                           outlined: true,

@@ -18,6 +18,19 @@ class ProfileIsarManager  {
       return false;
     }
   }
+  Future<bool> updateRequestedUserForMatch({required bool youLiked, required String uidPN})async{
+    Map<String, dynamic> tempMap = xProfile!.requestedUsersMapForMatch??{};
+    if (youLiked) {
+      tempMap.addAll({uidPN: true});
+    } else {
+      tempMap.remove(uidPN);
+    }
+    xProfile!.updateRequestedUsersForMatch(tempMap);
+    xPrint("the requested user for match are ${xProfile!.requestedUsersMapForMatch}", header: "FindingPartnerWidget");
+    await xProfileIsarManager.setProfile(xProfile!);
+    return true;
+
+  }
   Future<Profile> getProfileFromMap({required Map<dynamic, dynamic> map,required int profileNumber, required String uidPN}) async{
     return Profile(
         type: map['type'],
