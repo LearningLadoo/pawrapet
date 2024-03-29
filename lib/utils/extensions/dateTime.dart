@@ -43,6 +43,9 @@ extension DateFormats on DateTime {
   DateTime fromddMMyyyyhhmm(String ddMMyyyyhhmm) {
     return DateFormat('dd/MM/yyyy hh:mm a').parseStrict(ddMMyyyyhhmm);
   }
+  String tohhmma(){
+    return DateFormat('hh:mm a').format(this);
+  }
 }
 
 extension Operations on DateTime {

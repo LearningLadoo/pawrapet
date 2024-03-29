@@ -57,12 +57,11 @@ void onTapNotification(BuildContext context, Map details) async {
           //  get feed map
           Map<String, dynamic> temp = (await FirebaseCloudFirestore().getProfileDetails(separatedPath[1])) as Map<String, dynamic>;
           // padding uidPN in the map
-          temp.addAll({"uidPN": separatedPath[1]});
           context.push(ProfileDisplay(feedMap: temp));
           break;
         case 'mating':
-          // the schema for path is mating/<uidPN>/<step>
-          context.push(Mating(uidPN: separatedPath[1]!, flowStep: int.parse(separatedPath[2])));
+          // todo the schema for path is mating/<uidPN>/<step>
+          context.push(Mating(uidPN: separatedPath[1]!, flowStep: int.parse(separatedPath[2]), profileMap: {},));
           break;
         case 'account':
           context.push(const Account());

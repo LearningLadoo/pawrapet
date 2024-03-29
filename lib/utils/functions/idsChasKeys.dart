@@ -55,3 +55,11 @@ String processStringWrtId(String string,int number , {int type = 1}){
   }
   return tempList.join();
 }
+String getMatingId(String uidPN1, String uidPN2) {
+  if (uidPN1.compareTo(uidPN2) > 0) {
+    var temp = uidPN1;
+    uidPN1 = uidPN2;
+    uidPN2 = temp;
+  }
+  return '$uidPN1-$uidPN2';
+}

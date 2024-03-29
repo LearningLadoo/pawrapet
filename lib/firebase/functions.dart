@@ -41,12 +41,26 @@ class FirebaseCloudFunctions {
       return null;
     }
   }
-  // test messaging from server
-  Future<http.Response?> sendTestNotification() async {
-    await Future.delayed(Duration(seconds: 5));
+
+
+  // fetch the order ID and its status
+  Future<http.Response?> getSecurityPayOrderIdAndDetails(String uidPN, String frndsUidPN, String sessionID) async {
     try {
-      var url = Uri.parse('$mumbaiFnPath/testFirebaseMessage');
-      return await http.post(url, headers: {'Content-Type': 'application/json'});
+      var url = Uri.parse('$mumbaiFnPath/getOrderIdForSecurityPay');
+      String bodyString = jsonEncode({'uidPN': uidPN, 'frndsUidPN': frndsUidPN, 'sessionID': sessionID, 'cha': getChas()});
+      return await http.post(url, body: bodyString, headers: {'Content-Type': 'application/json'});
+    } catch (e) {
+      xPrint(e.toString(), header: "getSecurityPayOrderIdAndDetails");
+      return null;
+    }
+  }
+
+  // verify the payment
+  Future<http.Response?> verifySecurityPayAndUpdateCloud(String uidPN, String orderId, String sessionID, bool isNew) async {
+    try {
+      var url = Uri.parse('$mumbaiFnPath/verifyUpdateSecurityPay');
+      String bodyString = jsonEncode({'uidPN': uidPN, 'orderId': orderId, 'sessionID': sessionID,'isNew':isNew, 'cha': getChas()});
+      return await http.post(url, body: bodyString, headers: {'Content-Type': 'application/json'});
     } catch (e) {
       xPrint(e.toString());
       return null;

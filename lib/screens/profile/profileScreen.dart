@@ -518,7 +518,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Text("Do you want to charge any amount for mating ?", style: xTheme.textTheme.bodyLarge!.apply(fontWeightDelta: 2)),
                               if (_chargeAmount) const SizedBox().vertical(size: xSize / 4),
                               // infoText
-                              if (_chargeAmount) xInfoText(context, "The platform charges will be 10% of the amount you choose"),
+                              if (_chargeAmount) xInfoText(context, "12% of the amount will be used as service charges"),
                               if (_chargeAmount) const SizedBox().vertical(size: xSize / 4),
                               // amount textField
                               if (_chargeAmount)

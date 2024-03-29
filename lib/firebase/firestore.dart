@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/functions/common.dart';
+import '../utils/functions/idsChasKeys.dart';
 
 int postFetchLimit = 10;
 
@@ -8,12 +9,14 @@ class FirebaseCloudFirestore {
   late FirebaseFirestore db;
   late CollectionReference<Map<String, dynamic>> collectionUID;
   late CollectionReference<Map<String, dynamic>> collectionUser;
+  late CollectionReference<Map<String, dynamic>> collectionMatingSessions;
 
   //constructor
   FirebaseCloudFirestore() {
     db = FirebaseFirestore.instance;
     collectionUID = db.collection("UIDs");
     collectionUser = db.collection("users");
+    collectionMatingSessions = db.collection("MatingSessions");
   }
 
   // get user details from UID
@@ -80,7 +83,11 @@ class FirebaseCloudFirestore {
   Future<Map<String, dynamic>?> getProfileDetails(String uidPN) async {
     try {
       final userDoc = await collectionUser.doc(uidPN).get();
-      return (userDoc.exists ? userDoc.data() : null);
+      Map<String, dynamic>? temp = (userDoc.exists ? userDoc.data() : null);
+      if (temp != null) {
+        temp.addAll({"uidPN": uidPN});
+      }
+      return temp;
     } catch (e) {
       xPrint(e.toString(), header: 'FirebaseCloudFirestore/getProfileDetails');
       return null;
@@ -101,12 +108,8 @@ class FirebaseCloudFirestore {
       required String frndsUidPN,
       required String myName,
       required String frndsName,
-      required String myIcon,
-
-      /// icon url
-      required String frndsIcon,
-
-      /// icon url
+      required String myIcon, // icon url
+      required String frndsIcon, // icon url
       required String myUsername,
       required String frndsUsername}) async {
     try {
@@ -125,6 +128,146 @@ class FirebaseCloudFirestore {
     } catch (e) {
       xPrint(e.toString(), header: 'FirebaseCloudFirestore/updateMatingReq');
       return false;
+    }
+  }
+
+  // get profiles with mating sessions and sort them with their latest changes
+  Future<List<Map<String, dynamic>?>?> getMatingSessionProfiles(String uidPN) async {
+    // get the mating sessions
+    try {
+      List<DocumentSnapshot> matingSessions = (await collectionUser.doc(uidPN).collection("matingSessions").get()).docs;
+      List<({Future<DocumentSnapshot?> snap, int epoch})> temp = [];
+      for (DocumentSnapshot d in matingSessions) {
+        Map<String, dynamic> data = d.data() as Map<String, dynamic>;
+        temp.add((snap: getMatingIDDetails(data['matingID']), epoch: int.parse(data['sessionID'].split(":")[0])));
+      }
+      // sort the promises based on the epochs in sessionID
+      temp.sort((a, b) => b.epoch.compareTo(a.epoch));
+      // create a list with only promises
+      List<Future<DocumentSnapshot?>> promises1 = [];
+      for (var i in temp) {
+        promises1.add(i.snap);
+      }
+      // await
+      final matingIdsInfo = await Future.wait(promises1);
+      // fetch
+      List<Future<Map<String, dynamic>?>> promisesActiveSessions = [];
+      List<Future<Map<String, dynamic>?>> promisesPassiveSessions = [];
+      for (DocumentSnapshot? i in matingIdsInfo) {
+        if (i != null) {
+          final map = i.data() as Map<String, dynamic>;
+          List<String> temp = List<String>.from(map['uids']);
+          temp.remove(uidPN); // removing my uid
+          String frndsUID = temp[0]; // now the left uid is frnds uid only
+          // fetch the old profile details
+          if (map['activeSessionID'] != null) {
+            promisesActiveSessions.add(getProfileBeforeSessionCreation(
+              frndsUID,
+              i.id,
+              map['activeSessionID'],
+            ));
+          } // fetch the latest profile
+          else {
+            promisesPassiveSessions.add(getProfileDetails(frndsUID));
+          }
+        }
+      }
+      return await Future.wait([...promisesActiveSessions, ...promisesPassiveSessions]);
+    } catch (e) {
+      xPrint("$e", header: "getMatingSessionProfiles");
+      return [];
+    }
+  }
+
+  /// get the profile upon the creation of mating session + the sessionID
+  Future<Map<String, dynamic>?> getProfileBeforeSessionCreation(String uidPN, String matingID, String sessionID) async {
+    try {
+      return {"sessionID": sessionID, "uidPN": uidPN, ...(await collectionMatingSessions.doc('$matingID/matings/$sessionID/$uidPN/details').get()).data()!};
+    } catch (e) {
+      xPrint("$e", header: "getProfileBeforeSessionCreation");
+      return null;
+    }
+  }
+
+  // fetch the schedule details
+  Future<Map<String, dynamic>?> getScheduleSessionDetails(String matingID, String sessionID, ) async {
+    try {
+      xPrint('$matingID/matings/$sessionID', header: "getScheduleSessionDetails");
+      return (await collectionMatingSessions.doc('$matingID/matings/$sessionID').get()).data();
+    } catch (e) {
+      xPrint("$e", header: "getScheduleSessionDetails");
+      return null;
+    }
+  }
+
+
+  // fetch the mating id details
+  Future<DocumentSnapshot?> getMatingIDDetails(String matingID) async {
+    try {
+      xPrint(matingID, header: "getMatingIDDetails");
+      return (await collectionMatingSessions.doc(matingID).get());
+    } catch (e) {
+      xPrint("$e", header: "getMatingIDDetails");
+      return null;
+    }
+  }
+
+  // confirm the schedule
+  Future<bool> confirmSchedule(String matingID, String sessionID, String uidPN, int scheduleCreatedId) async {
+    try {
+      await collectionMatingSessions.doc('$matingID/matings/$sessionID/$uidPN/scheduleDetails').set(
+        {"approved": scheduleCreatedId},
+      );
+      return true;
+    } catch (e) {
+      xPrint("$e", header: "confirmSchedule");
+      return false;
+    }
+  }
+
+  // send schedule proposal
+  Future<bool> sendScheduleProposal(
+    String matingID,
+    String sessionID,
+    String uidPN,
+    String proposedCenter,
+    String proposedDate,
+    String proposedTime,
+  ) async {
+    try {
+      await collectionMatingSessions.doc('$matingID/matings/$sessionID/$uidPN/scheduleDetails').set(
+        {
+          "creationID": DateTime.now().millisecondsSinceEpoch,
+          "proposedBy": uidPN,
+          "proposedDate": proposedDate,
+          "proposedTime": proposedTime,
+          "proposedCenter": proposedCenter,
+        },
+      );
+      return true;
+    } catch (e) {
+      xPrint("$e", header: "sendScheduleProposal");
+      return false;
+    }
+  }
+
+  // get the current stage map; {2: epoch, currStage: 2}
+  Future<Map<String, dynamic>?> getCurrentMatingStage(String uidPN, String matingID, String sessionID) async {
+    try {
+      return (await collectionMatingSessions.doc('$matingID/matings/$sessionID/$uidPN/status').get()).data();
+    } catch (e) {
+      xPrint("$e", header: "getCurrentMatingStage");
+      return null;
+    }
+  }
+  // get the payments that the user made while mating session
+  Future<Map<String, dynamic>?> getMatingPaymentInfo(String uidPN, String matingID, String sessionID) async {
+    try {
+      final data = (await collectionMatingSessions.doc('$matingID/matings/$sessionID/$uidPN/payment').get()).data();
+      return data??{};
+    } catch (e) {
+      xPrint("$e", header: "getMatingPaymentInfo");
+      return null;
     }
   }
 
@@ -191,15 +334,14 @@ Query getQueryFromFilterMap(CollectionReference parentCollection, Map? filters) 
       xPrint("adding colors to query ${filters['colors']}", header: "getQueryFromFilterMap");
       if (filters['colors'].length == 1) {
         query = query.where("color", isEqualTo: filters["colors"][0]);
-      }
-      else if (filters['colors'].length <= 2) {
+      } else if (filters['colors'].length <= 2) {
         // its just a workaround to not let the user feel any change
         colorFilter = Filter.or(
           Filter("color", isEqualTo: filters["colors"]?[0]),
           Filter("color", isEqualTo: filters["colors"]?[1]),
         );
         query = query.where(colorFilter);
-      }else if (filters['colors'].length <= 3) {
+      } else if (filters['colors'].length <= 3) {
         // its just a workaround to not let the user feel any change
         colorFilter = Filter.or(
           Filter("color", isEqualTo: filters["colors"]?[0]),
@@ -207,7 +349,7 @@ Query getQueryFromFilterMap(CollectionReference parentCollection, Map? filters) 
           Filter("color", isEqualTo: filters["colors"]?[2]),
         );
         query = query.where(colorFilter);
-      }else if (filters['colors'].length <= 4) {
+      } else if (filters['colors'].length <= 4) {
         // its just a workaround to not let the user feel any change
         colorFilter = Filter.or(
           Filter("color", isEqualTo: filters["colors"]?[0]),
@@ -216,7 +358,7 @@ Query getQueryFromFilterMap(CollectionReference parentCollection, Map? filters) 
           Filter("color", isEqualTo: filters["colors"]?[3]),
         );
         query = query.where(colorFilter);
-      }else if (filters['colors'].length <= 5) {
+      } else if (filters['colors'].length <= 5) {
         // its just a workaround to not let the user feel any change
         colorFilter = Filter.or(
           Filter("color", isEqualTo: filters["colors"]?[0]),
@@ -237,7 +379,7 @@ Query getQueryFromFilterMap(CollectionReference parentCollection, Map? filters) 
           Filter("gender", isEqualTo: filters["genders"]?[0]),
           Filter("gender", isEqualTo: filters["genders"]?[1]),
         );
-        if(colorFilter!=null){
+        if (colorFilter != null) {
           query = query.where(Filter.and(genderFilter, colorFilter));
         } else {
           // only one filter of or there

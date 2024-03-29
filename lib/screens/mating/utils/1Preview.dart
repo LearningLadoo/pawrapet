@@ -6,7 +6,8 @@ import 'package:pawrapet/utils/extensions/sizedBox.dart';
 import 'package:pawrapet/utils/widgets/buttons.dart';
 
 class Preview1Final extends StatefulWidget {
-  Preview1Final({Key? key}) : super(key: key);
+  Map<String, dynamic> profileMap;
+  Preview1Final({Key? key,required this.profileMap}) : super(key: key);
 
   @override
   State<Preview1Final> createState() => _Preview1FinalState();
@@ -29,7 +30,7 @@ class _Preview1FinalState extends State<Preview1Final> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              FindingPartnerWidget(feedMap: {},),
+              FindingPartnerWidget(feedMap: widget.profileMap,),
               const SizedBox().vertical(),
               SizedBox(
                 width: xWidth,

@@ -150,3 +150,12 @@ ColorScheme xDatePickerColorScheme = ColorScheme(
 );
 // system theme
 SystemUiOverlayStyle xMySystemTheme = SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: xOnPrimary, statusBarColor: xOnPrimary, systemNavigationBarIconBrightness: Brightness.dark);
+// todo fetch this list from firebase
+Map allMatingPoints = {
+  "12101": {
+    'code': '12101',
+    'name': 'Center 12101, Faridabad, Haryana',
+    'latitude': 28.41337361131685,
+    'longitude': 77.30588547288345,
+  }
+};
