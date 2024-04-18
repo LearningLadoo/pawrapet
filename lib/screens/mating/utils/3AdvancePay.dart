@@ -55,11 +55,12 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
   Map<String, dynamic> orderMap = {};
   bool payInitiated = false;
   bool payError = false;
+  String? payStatus; // null(to display loader), uninitiated(first time), success, failed, pending
 
   @override
   void initState() {
-    payError = false;
     chosenDate = DateTime.now().add(const Duration(minutes: 30));
+    updateOrderIdDetailsAndVerify();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
@@ -68,8 +69,10 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     // Do something when payment succeeds
-    String? resData = (await FirebaseCloudFunctions().verifySecurityPayAndUpdateCloud(xProfile!.uidPN, response.orderId!, widget.sessionID, true))?.body;
-    xPrint("handle payment ${resData} ${response.orderId} ${response.data}", header: "AdvancedPay3");
+    setState(() {
+      payStatus = null;
+    });
+    updateOrderIdDetailsAndVerify();
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -91,49 +94,56 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
   }
 
   // success, pending, failed, null
-  Future<String> fetchTheOrderDetailsAndReturnPayStatus() async {
+  Future<void> updateOrderIdDetailsAndVerify() async {
+    payError = false;
     paidAmount = 0;
-    String output = "initiated";
+    String output = "uninitiated";
     String? resData = (await FirebaseCloudFunctions().getSecurityPayOrderIdAndDetails(xProfile!.uidPN, widget.frndsUidPN, widget.sessionID))?.body;
-    xPrint("the resposene is $resData", header: "AdvancedPay3");
     orderMap = jsonDecode(resData!);
+    xPrint("the resposene is $resData", header: "AdvancedPay3");
+
     // todo handle error
     if (orderMap['error'] != null) {
       xSnackbar(context, "Please try again later");
     } else if (orderMap['orderStatus'] == "paid") {
-      // todo call for verification
+      // check nothing as it has been verified
+      output = "success";
+      paidAmount = 500;
+    } else {
+      // this prevents it from being called in the first call, when the order was actually created
+      // call for verification
+      await Future.delayed(Duration(seconds: 10));
       String? res = (await FirebaseCloudFunctions().verifySecurityPayAndUpdateCloud(xProfile!.uidPN, orderMap['orderId']!, widget.sessionID, false))?.body;
       xPrint("handle payment res $res", header: "AdvancedPay3");
       Map<String, dynamic> resMap = jsonDecode(res!);
-      output = resMap['status'];
-      paidAmount = 500;
+      if (resMap['error'] != null) {
+        // do nothing
+        // xSnackbar(context, "Please try again later");
+      } else {
+        output = resMap['status'];
+        paidAmount = 500;
+      }
     }
     finalAmount = (paymentToPartner / 2 + securityDeposit - paidAmount).round();
-    return output;
+    payStatus = output;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchTheOrderDetailsAndReturnPayStatus(),
-        builder: (context, snap) {
-          xPrint("the snap data ${snap.hasData} ${snap.data}", header: "AdvancedPay3");
-          if (snap.hasData) {
-            switch (snap.data) {
-              case "success":
-                return payAmount("Paid", false);
-              case "pending":
-                return payAmount("Verifying...", false);
-              case "failed":
-              case "initiated":
-                return payAmount("Pay ₹$finalAmount", true);
-              default:
-                return xErrorText(context, "Unhandled case");
-            }
-          } else {
-            return const LinearProgressIndicator();
-          }
-        });
+    switch (payStatus) {
+      case null:
+        return const LinearProgressIndicator();
+      case "success":
+        return payAmount("Paid", false);
+      case "pending":
+        return payAmount("Verifying...", false);
+      case "failed":
+      case "uninitiated":
+        return payAmount("Pay ₹$finalAmount", true);
+      default:
+        return xErrorText(context, "Unhandled case");
+    }
   }
 
   Widget payAmount(String buttonText, bool buttonEnabled) {
@@ -168,7 +178,7 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
                   "\n**Total**",
                   style: xTheme.textTheme.labelLarge,
                 ),
-                SizedBox().horizontal(size: xSize / 4),
+                const SizedBox().horizontal(size: xSize / 4),
                 xTextWithBold(
                   "="
                   "${(paymentToPartner == 0) ? "" : "\n="}"
@@ -176,7 +186,7 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
                   "\n**=**",
                   style: xTheme.textTheme.labelLarge,
                 ),
-                SizedBox().horizontal(size: xSize / 4),
+                const SizedBox().horizontal(size: xSize / 4),
                 xTextWithBold(
                   "+ ₹$securityDeposit"
                   "${(paymentToPartner == 0) ? "" : "\n+ ₹${(paymentToPartner * 0.5).round()}"}"
@@ -192,10 +202,10 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
           height: xSize,
         ),
         (payInitiated)
-            ? LinearProgressIndicator()
+            ? const LinearProgressIndicator()
             : AbsorbPointer(
-          absorbing: !buttonEnabled,
-              child: XRoundedButton(
+                absorbing: !buttonEnabled,
+                child: XRoundedButton(
                   onPressed: () async {
                     // todo $start here, to save the orderID in local as current active payments and remove it once the details are added in the server
                     // flow
@@ -233,10 +243,10 @@ class _AdvancedPay3State extends State<AdvancedPay3> {
                   enabled: buttonEnabled,
                   backgroundColor: xPrimary.withOpacity(0.8),
                 ),
-            ),
-        if(payError)SizedBox().vertical(size: xSize/2),
-        if(payError)xErrorText(context, 'There was an error while payment. Do not worry if the amount has been deducted from your account, it will be refunded within 24 hours.'),
-        if (buttonText == "Paid") SizedBox().vertical(size: xSize/2),
+              ),
+        if (payError) const SizedBox().vertical(size: xSize / 2),
+        if (payError) xErrorText(context, 'There was an error while payment. Do not worry if the amount has been deducted from your account, it will be refunded within 24 hours.'),
+        if (buttonText == "Paid") const SizedBox().vertical(size: xSize / 2),
         if (buttonText == "Paid")
           FutureBuilder(
             future: FirebaseCloudFirestore().getMatingPaymentInfo(widget.frndsUidPN, widget.matingID, widget.sessionID),
